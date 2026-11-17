@@ -1,0 +1,29 @@
+/**
+ * Snapify
+ * © 2026 NOVALABS WEB DESIGN — Tunisie
+ * Contact : contact@novalabs.tn · +216 24 734 647
+ * Tous droits réservés. Toute reproduction, modification ou diffusion sans autorisation écrite est interdite.
+ */
+/*
+ * Jetons de marque disponibles dans les modules (bg-px-navy, text-px-primary…).
+ * Les valeurs proviennent des variables CSS du site : un module suit automatiquement
+ * l'identité visuelle configurée dans l'administration.
+ */
+@theme inline reference {
+  --color-px-primary: var(--px-primary);
+  --color-px-primary-dark: var(--px-primary-dark);
+  --color-px-primary-light: var(--px-primary-light);
+  --color-px-accent: var(--px-accent);
+  --color-px-accent-mid: var(--px-accent-mid);
+  --color-px-accent-light: var(--px-accent-light);
+  --color-px-navy: var(--px-navy);
+  --color-px-navy-2: var(--px-navy-2);
+  --color-px-surface: var(--px-surface);
+  --color-px-surface-2: var(--px-surface-2);
+  --color-px-border: var(--px-border);
+  --color-px-border-soft: var(--px-border-soft);
+  --color-px-text: var(--px-text);
+  --color-px-muted: var(--px-muted);
+  --font-sans: var(--px-font-body), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: var(--px-font-heading), var(--px-font-body), system-ui, sans-serif;
+}

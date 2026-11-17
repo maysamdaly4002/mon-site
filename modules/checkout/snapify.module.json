@@ -1,0 +1,264 @@
+{
+  "id": "novalabs.checkout",
+  "name": "Commande",
+  "version": "1.0.0",
+  "description": "Tunnel de commande en une page : coordonnées, adresse en Tunisie (gouvernorats), modes de livraison, paiement à la livraison ou par virement, e-mails de confirmation, suivi de commande et gestion des commandes dans l’administration.",
+  "author": {
+    "name": "NOVALABS WEB DESIGN",
+    "email": "contact@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "E-commerce",
+  "icon": "receipt",
+  "engines": {
+    "snapify": "^1.2.0"
+  },
+  "permissions": [
+    "http:routes",
+    "http:cookies",
+    "admin:routes",
+    "database",
+    "storage",
+    "mail:send",
+    "site:read"
+  ],
+  "slots": [],
+  "routes": [
+    "/commande/*"
+  ],
+  "requires": {
+    "novalabs.shop": "^1.0.0",
+    "novalabs.cart": "^1.0.0"
+  },
+  "uses": [
+    "novalabs.customers"
+  ],
+  "entries": {
+    "public": "src/public/index.tsx",
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "orders",
+      "label": "Commandes",
+      "icon": "receipt"
+    }
+  ],
+  "settings": [
+    {
+      "key": "homeLabel",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Livraison à domicile : intitulé",
+      "default": "Livraison à domicile",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "homeDelay",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Livraison à domicile : délai",
+      "default": "48 à 72 h ouvrées",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "homePrice",
+      "type": "number",
+      "group": "Livraison",
+      "label": "Livraison à domicile : prix",
+      "default": 7,
+      "min": 0,
+      "max": 100000,
+      "step": 0.5,
+      "public": true
+    },
+    {
+      "key": "freeShippingThreshold",
+      "type": "number",
+      "group": "Livraison",
+      "label": "Livraison à domicile offerte dès",
+      "help": "Montant du panier après remise. 0 = jamais offerte.",
+      "default": 150,
+      "min": 0,
+      "max": 1000000,
+      "public": true
+    },
+    {
+      "key": "expressEnabled",
+      "type": "boolean",
+      "group": "Livraison",
+      "label": "Proposer la livraison express",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "expressLabel",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Express : intitulé",
+      "default": "Livraison express",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "expressDelay",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Express : délai",
+      "default": "24 h (Grand Tunis)",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "expressPrice",
+      "type": "number",
+      "group": "Livraison",
+      "label": "Express : prix",
+      "default": 12,
+      "min": 0,
+      "max": 100000,
+      "step": 0.5,
+      "public": true
+    },
+    {
+      "key": "pickupEnabled",
+      "type": "boolean",
+      "group": "Livraison",
+      "label": "Proposer le retrait en boutique",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "pickupLabel",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Retrait : intitulé",
+      "default": "Retrait en boutique",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "pickupAddress",
+      "type": "text",
+      "group": "Livraison",
+      "label": "Retrait : adresse",
+      "default": "Lorem ipsum, 5100 Mahdia",
+      "public": true,
+      "maxLength": 160
+    },
+    {
+      "key": "codEnabled",
+      "type": "boolean",
+      "group": "Paiement",
+      "label": "Paiement à la livraison",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "codText",
+      "type": "text",
+      "group": "Paiement",
+      "label": "Paiement à la livraison : explication",
+      "default": "Réglez en espèces à la réception de votre colis.",
+      "public": true,
+      "maxLength": 200
+    },
+    {
+      "key": "transferEnabled",
+      "type": "boolean",
+      "group": "Paiement",
+      "label": "Virement bancaire",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "transferText",
+      "type": "text",
+      "group": "Paiement",
+      "label": "Virement : explication",
+      "default": "Nos coordonnées bancaires vous sont communiquées après la commande.",
+      "public": true,
+      "maxLength": 200
+    },
+    {
+      "key": "bankDetails",
+      "type": "textarea",
+      "group": "Paiement",
+      "label": "Coordonnées bancaires",
+      "help": "Affichées sur la page de confirmation et dans l’e-mail, uniquement pour les commandes payées par virement.",
+      "default": "Titulaire : Lorem Ipsum SARL\nBanque : Lorem Bank — agence Mahdia\nRIB : 00 000 0000000000000 00\nIndiquez le numéro de commande en référence du virement.",
+      "maxLength": 1000,
+      "rows": 4
+    },
+    {
+      "key": "orderPrefix",
+      "type": "text",
+      "group": "Commandes",
+      "label": "Préfixe des numéros de commande",
+      "default": "CMD-",
+      "maxLength": 10
+    },
+    {
+      "key": "minOrder",
+      "type": "number",
+      "group": "Commandes",
+      "label": "Montant minimum de commande",
+      "help": "0 = aucun minimum.",
+      "default": 0,
+      "min": 0,
+      "max": 1000000,
+      "public": true
+    },
+    {
+      "key": "guestCheckout",
+      "type": "boolean",
+      "group": "Commandes",
+      "label": "Commander sans compte",
+      "help": "Désactivé : la connexion à l’espace client est demandée avant de commander (module Espace client requis).",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "termsPath",
+      "type": "text",
+      "group": "Commandes",
+      "label": "Page des conditions générales de vente",
+      "help": "Vide : pas de case à cocher.",
+      "default": "/mentions-legales/",
+      "public": true,
+      "maxLength": 200
+    },
+    {
+      "key": "thankYouText",
+      "type": "textarea",
+      "group": "Commandes",
+      "label": "Message de remerciement",
+      "default": "Merci pour votre confiance ! Nous préparons votre commande avec soin et vous contactons par téléphone pour confirmer la livraison.",
+      "public": true,
+      "maxLength": 600,
+      "rows": 3
+    },
+    {
+      "key": "notifyEmails",
+      "type": "text",
+      "group": "Notifications",
+      "label": "E-mails prévenus à chaque commande",
+      "help": "Séparés par des virgules. Vide : adresse de contact du site.",
+      "default": "",
+      "maxLength": 400
+    },
+    {
+      "key": "notifyCustomerOnStatus",
+      "type": "boolean",
+      "group": "Notifications",
+      "label": "Prévenir le client à chaque changement de statut",
+      "help": "Proposé par défaut dans l’administration ; décochable commande par commande.",
+      "default": true
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

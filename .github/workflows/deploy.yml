@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref (origin/main ou tags/v1.1.0)'
+        required: false
+        default: origin/main
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Production (hamdi)
+    runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 30
+    steps:
+      - name: Deploy Snapify
+        env:
+          REF: ${{ github.event.inputs.ref || 'origin/main' }}
+        run: sudo -n bash /home/snapify/scripts/deploy.sh "$REF"

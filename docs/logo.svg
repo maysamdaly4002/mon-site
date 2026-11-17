@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Snapify">
+  <rect width="96" height="96" rx="22" fill="#00a89d"/>
+  <g transform="translate(14 14) scale(1.7)">
+    <rect x="7" y="9" width="26" height="22" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2.4"/>
+    <path d="M7 15.5 H33" stroke="#FFFFFF" stroke-width="2.4"/>
+    <circle cx="11" cy="12.3" r="1.1" fill="#FFFFFF"/>
+    <circle cx="14.4" cy="12.3" r="1.1" fill="#FFFFFF"/>
+    <path d="M20 18.2 L21.6 22 L25.4 23.6 L21.6 25.2 L20 29 L18.4 25.2 L14.6 23.6 L18.4 22 Z" fill="#FFFFFF"/>
+  </g>
+</svg>

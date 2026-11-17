@@ -1,0 +1,340 @@
+{
+  "id": "novalabs.shop",
+  "name": "Boutique",
+  "version": "1.0.0",
+  "description": "Catalogue de produits : catégories, fiches produit avec galerie, recherche, tri et filtres, gestion du stock, et widgets « Produits » et « Catégories » à placer dans vos pages.",
+  "author": {
+    "name": "NOVALABS WEB DESIGN",
+    "email": "contact@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "E-commerce",
+  "icon": "store",
+  "engines": {
+    "snapify": "^1.2.0"
+  },
+  "permissions": [
+    "http:routes",
+    "admin:routes",
+    "database"
+  ],
+  "slots": [],
+  "routes": [
+    "/boutique/*",
+    "/produit/*"
+  ],
+  "entries": {
+    "public": "src/public/index.tsx",
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "products",
+      "label": "Produits",
+      "icon": "package"
+    },
+    {
+      "id": "categories",
+      "label": "Catégories",
+      "icon": "folder"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "products",
+      "label": "Produits",
+      "description": "Grille de produits : sélection, nouveautés, promotions ou une catégorie.",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Surtitre",
+          "default": "Boutique",
+          "maxLength": 60
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Titre",
+          "default": "Nos produits du moment",
+          "maxLength": 120
+        },
+        {
+          "key": "subtitle",
+          "type": "textarea",
+          "label": "Texte d’introduction",
+          "default": "",
+          "maxLength": 400,
+          "rows": 2
+        },
+        {
+          "key": "source",
+          "type": "select",
+          "label": "Produits affichés",
+          "default": "featured",
+          "options": [
+            {
+              "value": "featured",
+              "label": "Produits mis en avant"
+            },
+            {
+              "value": "latest",
+              "label": "Nouveautés"
+            },
+            {
+              "value": "sale",
+              "label": "En promotion"
+            },
+            {
+              "value": "bestsellers",
+              "label": "Meilleures ventes"
+            },
+            {
+              "value": "category",
+              "label": "Une catégorie"
+            }
+          ]
+        },
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie (adresse)",
+          "help": "Pour « Une catégorie » : adresse de la catégorie, ex. ceramique.",
+          "default": "",
+          "maxLength": 80
+        },
+        {
+          "key": "limit",
+          "type": "number",
+          "label": "Nombre de produits",
+          "default": 8,
+          "min": 1,
+          "max": 24
+        },
+        {
+          "key": "columns",
+          "type": "select",
+          "label": "Colonnes",
+          "default": "4",
+          "options": [
+            {
+              "value": "3",
+              "label": "3 colonnes"
+            },
+            {
+              "value": "4",
+              "label": "4 colonnes"
+            },
+            {
+              "value": "5",
+              "label": "5 colonnes"
+            }
+          ]
+        },
+        {
+          "key": "buttonLabel",
+          "type": "text",
+          "label": "Bouton « tout voir »",
+          "help": "Vide : pas de bouton.",
+          "default": "Voir toute la boutique",
+          "maxLength": 40
+        }
+      ]
+    },
+    {
+      "id": "categories",
+      "label": "Catégories",
+      "description": "Vignettes des catégories de la boutique.",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Surtitre",
+          "default": "Collections",
+          "maxLength": 60
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Titre",
+          "default": "Parcourir par catégorie",
+          "maxLength": 120
+        },
+        {
+          "key": "subtitle",
+          "type": "textarea",
+          "label": "Texte d’introduction",
+          "default": "",
+          "maxLength": 400,
+          "rows": 2
+        },
+        {
+          "key": "limit",
+          "type": "number",
+          "label": "Nombre de catégories",
+          "default": 6,
+          "min": 1,
+          "max": 12
+        },
+        {
+          "key": "style",
+          "type": "select",
+          "label": "Présentation",
+          "default": "tiles",
+          "options": [
+            {
+              "value": "tiles",
+              "label": "Grandes vignettes"
+            },
+            {
+              "value": "chips",
+              "label": "Pastilles compactes"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "key": "shopTitle",
+      "type": "text",
+      "group": "Boutique",
+      "label": "Titre de la boutique",
+      "default": "La boutique",
+      "public": true,
+      "maxLength": 80
+    },
+    {
+      "key": "shopIntro",
+      "type": "textarea",
+      "group": "Boutique",
+      "label": "Introduction",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "public": true,
+      "maxLength": 600,
+      "rows": 3
+    },
+    {
+      "key": "perPage",
+      "type": "number",
+      "group": "Boutique",
+      "label": "Produits par page",
+      "default": 12,
+      "min": 4,
+      "max": 48,
+      "public": true
+    },
+    {
+      "key": "defaultSort",
+      "type": "select",
+      "group": "Boutique",
+      "label": "Tri par défaut",
+      "default": "featured",
+      "public": true,
+      "options": [
+        {
+          "value": "featured",
+          "label": "Mis en avant d’abord"
+        },
+        {
+          "value": "latest",
+          "label": "Nouveautés"
+        },
+        {
+          "value": "price-asc",
+          "label": "Prix croissant"
+        },
+        {
+          "value": "price-desc",
+          "label": "Prix décroissant"
+        },
+        {
+          "value": "name",
+          "label": "Nom (A → Z)"
+        }
+      ]
+    },
+    {
+      "key": "currency",
+      "type": "select",
+      "group": "Prix et stock",
+      "label": "Devise",
+      "default": "TND",
+      "public": true,
+      "options": [
+        {
+          "value": "TND",
+          "label": "Dinar tunisien (DT)"
+        },
+        {
+          "value": "EUR",
+          "label": "Euro (€)"
+        },
+        {
+          "value": "USD",
+          "label": "Dollar américain ($)"
+        },
+        {
+          "value": "MAD",
+          "label": "Dirham marocain (MAD)"
+        },
+        {
+          "value": "DZD",
+          "label": "Dinar algérien (DA)"
+        }
+      ]
+    },
+    {
+      "key": "showStock",
+      "type": "boolean",
+      "group": "Prix et stock",
+      "label": "Afficher le stock restant sur la fiche produit",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "lowStockThreshold",
+      "type": "number",
+      "group": "Prix et stock",
+      "label": "Seuil de stock faible",
+      "help": "En dessous, la fiche indique « Plus que N en stock » et l’administration signale le produit.",
+      "default": 5,
+      "min": 0,
+      "max": 1000,
+      "public": true
+    },
+    {
+      "key": "hideOutOfStock",
+      "type": "boolean",
+      "group": "Prix et stock",
+      "label": "Masquer les produits épuisés du catalogue",
+      "default": false
+    },
+    {
+      "key": "deliveryText",
+      "type": "textarea",
+      "group": "Fiche produit",
+      "label": "Livraison et retours",
+      "help": "Texte de l’onglet « Livraison et retours » de chaque fiche produit.",
+      "default": "Livraison en 48 à 72 h partout en Tunisie. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nRetours acceptés sous 14 jours dans leur emballage d’origine. Ut enim ad minim veniam, quis nostrud exercitation.",
+      "public": true,
+      "maxLength": 3000,
+      "rows": 5
+    },
+    {
+      "key": "reassurance",
+      "type": "textarea",
+      "group": "Fiche produit",
+      "label": "Arguments de réassurance",
+      "help": "Un argument par ligne (4 au maximum), affichés sous le bouton d’achat.",
+      "default": "Livraison rapide partout en Tunisie\nPaiement à la livraison\nRetours sous 14 jours\nService client à votre écoute",
+      "public": true,
+      "maxLength": 600,
+      "rows": 4
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

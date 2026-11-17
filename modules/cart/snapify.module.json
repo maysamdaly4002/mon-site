@@ -1,0 +1,90 @@
+{
+  "id": "novalabs.cart",
+  "name": "Panier",
+  "version": "1.0.0",
+  "description": "Panier d’achat : icône dans l’en-tête, panier latéral, page panier avec recalcul des prix et du stock, et codes promo (pourcentage, montant fixe ou livraison offerte).",
+  "author": {
+    "name": "NOVALABS WEB DESIGN",
+    "email": "contact@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "E-commerce",
+  "icon": "shopping-bag",
+  "engines": {
+    "snapify": "^1.2.0"
+  },
+  "permissions": [
+    "http:routes",
+    "admin:routes",
+    "database"
+  ],
+  "slots": [
+    "header-actions"
+  ],
+  "routes": [
+    "/panier/"
+  ],
+  "requires": {
+    "novalabs.shop": "^1.0.0"
+  },
+  "entries": {
+    "public": "src/public/index.tsx",
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "coupons",
+      "label": "Codes promo",
+      "icon": "ticket"
+    }
+  ],
+  "settings": [
+    {
+      "key": "openDrawerOnAdd",
+      "type": "boolean",
+      "group": "Panier",
+      "label": "Ouvrir le panier latéral après un ajout",
+      "help": "Sinon, le bouton confirme l’ajout et le visiteur poursuit ses achats.",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "drawerEnabled",
+      "type": "boolean",
+      "group": "Panier",
+      "label": "Panier latéral",
+      "help": "Désactivé : l’icône du panier mène directement à la page panier.",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "couponsEnabled",
+      "type": "boolean",
+      "group": "Panier",
+      "label": "Champ « code promo »",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "note",
+      "type": "text",
+      "group": "Panier",
+      "label": "Mention sous le total",
+      "default": "Frais de livraison calculés à l’étape suivante.",
+      "public": true,
+      "maxLength": 160
+    },
+    {
+      "key": "continuePath",
+      "type": "text",
+      "group": "Panier",
+      "label": "Lien « Continuer mes achats »",
+      "default": "/boutique/",
+      "public": true,
+      "maxLength": 200
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

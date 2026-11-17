@@ -1,0 +1,446 @@
+/**
+ * Snapify
+ * © 2026 NOVALABS WEB DESIGN — Tunisie
+ * Contact : contact@novalabs.tn · +216 24 734 647
+ * Tous droits réservés. Toute reproduction, modification ou diffusion sans autorisation écrite est interdite.
+ */
+/*
+ * Thème Mahdia (boutique en ligne). Les options (palette, accent, typographie, angles) sont
+ * posées par Layout.tsx sous forme d'attributs data-mh-* sur <html> ; tout le thème lit les
+ * variables --mh-*. Les jetons --px-* des modules (boutique, panier, compte…) en découlent.
+ */
+
+/* ------------------------------------------------------------------ Palettes */
+
+:root {
+  --mh-paper: #faf6ef;
+  --mh-paper-2: #f1eadf;
+  --mh-card: #ffffff;
+  --mh-ink: #0f262b;
+  --mh-ink-2: #1c3a40;
+  --mh-text: #34474b;
+  --mh-muted: #66716f;
+  --mh-line: #e5dccd;
+  --mh-on-dark: #fbf8f3;
+
+  --mh-accent: #0e7c86;
+  --mh-on-accent: #ffffff;
+
+  --mh-font-display: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mh-font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mh-display-weight: 700;
+  --mh-display-tracking: -0.035em;
+  --mh-display-leading: 1.05;
+
+  --mh-r: 12px;
+  --mh-r-lg: 22px;
+  --mh-r-btn: 999px;
+}
+
+:root[data-mh-palette='white'] {
+  --mh-paper: #ffffff;
+  --mh-paper-2: #f4f4f2;
+  --mh-card: #ffffff;
+  --mh-ink: #111a1c;
+  --mh-ink-2: #22302f;
+  --mh-text: #3c4648;
+  --mh-muted: #636b6c;
+  --mh-line: #e7e7e3;
+}
+
+:root[data-mh-palette='brand'] {
+  --mh-paper: var(--px-surface);
+  --mh-paper-2: var(--px-surface-2);
+  --mh-card: #ffffff;
+  --mh-ink: var(--px-navy);
+  --mh-ink-2: var(--px-navy-2);
+  --mh-text: var(--px-text);
+  --mh-muted: var(--px-muted);
+  --mh-line: var(--px-border);
+}
+
+:root[data-mh-accent='gold'] { --mh-accent: #a87a24; }
+:root[data-mh-accent='coral'] { --mh-accent: #d9502f; }
+:root[data-mh-accent='brand'] { --mh-accent: var(--px-primary); }
+
+:root[data-mh-type='elegant'] {
+  --mh-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --mh-display-weight: 500;
+  --mh-display-tracking: -0.02em;
+  --mh-display-leading: 1.06;
+}
+:root[data-mh-type='brand'] {
+  --mh-font-display: var(--px-font-heading), var(--px-font-body), system-ui, sans-serif;
+  --mh-font-body: var(--px-font-body), system-ui, sans-serif;
+  --mh-display-weight: 600;
+  --mh-display-tracking: -0.025em;
+}
+
+:root[data-mh-corners='sharp'] { --mh-r: 3px; --mh-r-lg: 4px; --mh-r-btn: 3px; }
+:root[data-mh-corners='round'] { --mh-r: 16px; --mh-r-lg: 30px; --mh-r-btn: 999px; }
+:root[data-mh-corners='soft'] { --mh-r-btn: 12px; }
+
+/*
+ * Jetons des modules : la boutique, le panier, la commande et l'espace client reprennent
+ * les couleurs et la typographie du thème (déclarés sur body pour s'imposer aux valeurs de
+ * l'identité visuelle posées sur <html>, y compris dans les fenêtres ouvertes par les modules).
+ */
+html.mh-html body {
+  --px-primary: var(--mh-accent);
+  --px-primary-dark: color-mix(in oklab, var(--mh-accent) 82%, black);
+  --px-primary-light: color-mix(in oklab, var(--mh-accent) 88%, white);
+  --px-navy: var(--mh-ink);
+  --px-navy-2: var(--mh-ink-2);
+  --px-surface: var(--mh-paper-2);
+  --px-surface-2: color-mix(in oklab, var(--mh-paper-2) 70%, var(--mh-accent) 8%);
+  --px-text: var(--mh-text);
+  --px-muted: var(--mh-muted);
+  --px-border: var(--mh-line);
+  --px-border-soft: color-mix(in oklab, var(--mh-line) 60%, white);
+}
+html.mh-html:not([data-mh-type='brand']) body {
+  --px-font-body: 'Plus Jakarta Sans';
+  --px-font-heading: 'Plus Jakarta Sans';
+}
+html.mh-html[data-mh-type='elegant'] body {
+  --px-font-heading: 'Fraunces';
+}
+
+/* Couleurs sémantiques : claires par défaut, inversées dans les sections sombres. */
+:root,
+.mh-light {
+  --mh-fg: var(--mh-ink);
+  --mh-fg-2: var(--mh-muted);
+  --mh-rule: var(--mh-line);
+  --mh-surface: var(--mh-card);
+  --mh-accent-text: color-mix(in oklab, var(--mh-accent) 85%, black);
+  --mh-btn-bg: var(--mh-ink);
+  --mh-btn-fg: var(--mh-on-dark);
+}
+:root[data-mh-accent='brand'],
+:root[data-mh-accent='brand'] .mh-light {
+  --mh-accent-text: var(--px-primary-dark);
+}
+.mh-dark {
+  --mh-fg: var(--mh-on-dark);
+  --mh-fg-2: color-mix(in oklab, var(--mh-on-dark) 68%, transparent);
+  --mh-rule: color-mix(in oklab, #ffffff 14%, transparent);
+  --mh-surface: color-mix(in oklab, #ffffff 6%, transparent);
+  --mh-accent-text: color-mix(in oklab, var(--mh-accent) 50%, white);
+  --mh-btn-bg: var(--mh-accent);
+  --mh-btn-fg: var(--mh-on-accent);
+}
+.mh-brand {
+  --mh-fg: var(--mh-on-accent);
+  --mh-fg-2: color-mix(in oklab, var(--mh-on-accent) 80%, transparent);
+  --mh-accent-text: var(--mh-on-accent);
+  --mh-btn-bg: var(--mh-on-accent);
+  --mh-btn-fg: var(--mh-accent);
+}
+
+/* ------------------------------------------------------------------ Base */
+
+html.mh-html,
+html.mh-html body {
+  background: var(--mh-paper);
+}
+.mh-root {
+  font-family: var(--mh-font-body);
+  color: var(--mh-fg);
+  background: var(--mh-paper);
+  min-height: 100vh;
+}
+/* Coquille de page fournie par l'hôte : ses couleurs par défaut ne doivent pas masquer celles du thème. */
+.mh-root > .min-h-screen {
+  background: transparent;
+  color: inherit;
+}
+.mh-root :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--mh-font-body);
+}
+.mh-root ::selection {
+  background: color-mix(in oklab, var(--mh-accent) 25%, transparent);
+}
+.mh-display,
+.mh-root .mh-display {
+  font-family: var(--mh-font-display);
+  font-weight: var(--mh-display-weight);
+  letter-spacing: var(--mh-display-tracking);
+  line-height: var(--mh-display-leading);
+  text-wrap: balance;
+}
+.mh-em {
+  font-style: normal;
+  color: var(--mh-accent-text);
+}
+:root[data-mh-type='elegant'] .mh-em {
+  font-style: italic;
+}
+.mh-num {
+  font-family: var(--mh-font-display);
+  font-weight: var(--mh-display-weight);
+  letter-spacing: var(--mh-display-tracking);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ------------------------------------------------------------------ Boutons et liens */
+
+.mh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--mh-r-btn);
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.mh-btn:active { transform: translateY(1px); }
+.mh-btn-lg { padding: 1.05rem 2rem; font-size: 0.95rem; }
+.mh-btn-arrow { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.mh-btn:hover .mh-btn-arrow, .mh-link:hover .mh-btn-arrow { transform: translateX(4px); }
+
+.mh-btn-primary {
+  background: var(--mh-btn-bg);
+  color: var(--mh-btn-fg);
+}
+.mh-btn-primary:hover {
+  background: var(--mh-accent);
+  color: var(--mh-on-accent);
+  box-shadow: 0 14px 30px -14px color-mix(in oklab, var(--mh-accent) 80%, transparent);
+}
+.mh-dark .mh-btn-primary:hover, .mh-brand .mh-btn-primary:hover { background: #fff; color: var(--mh-ink); }
+.mh-btn-outline {
+  color: var(--mh-fg);
+  border-color: color-mix(in oklab, var(--mh-fg) 25%, transparent);
+  background: transparent;
+}
+.mh-btn-outline:hover { border-color: var(--mh-fg); background: var(--mh-fg); color: var(--mh-paper); }
+.mh-dark .mh-btn-outline:hover { color: var(--mh-ink); background: #fff; }
+.mh-btn-dark { background: var(--mh-ink); color: var(--mh-on-dark); }
+.mh-btn-dark:hover { background: var(--mh-accent); color: var(--mh-on-accent); }
+.mh-btn-accent { background: var(--mh-accent); color: var(--mh-on-accent); }
+.mh-btn-accent:hover { background: var(--mh-ink); color: var(--mh-on-dark); }
+.mh-btn-light { background: #fff; color: var(--mh-ink); }
+.mh-btn-light:hover { background: var(--mh-paper-2); }
+.mh-btn-glass {
+  background: color-mix(in oklab, #fff 14%, transparent);
+  color: #fff;
+  border-color: color-mix(in oklab, #fff 30%, transparent);
+}
+.mh-btn-glass:hover { background: color-mix(in oklab, #fff 24%, transparent); }
+
+.mh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--mh-fg);
+  padding-bottom: 0.2rem;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: color 0.2s, background-size 0.35s;
+  cursor: pointer;
+}
+.mh-link:hover { color: var(--mh-accent-text); }
+
+/* ------------------------------------------------------------------ Surfaces */
+
+.mh-card {
+  background: var(--mh-surface);
+  border: 1px solid var(--mh-rule);
+  border-radius: var(--mh-r-lg);
+}
+.mh-card-hover {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.3s;
+}
+.mh-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--mh-accent) 35%, transparent);
+  box-shadow: 0 30px 60px -35px color-mix(in oklab, var(--mh-ink) 40%, transparent);
+}
+/* Signature : coins opposés très arrondis, comme une vague. */
+.mh-shape { border-radius: calc(var(--mh-r-lg) * 4) var(--mh-r-lg) calc(var(--mh-r-lg) * 4) var(--mh-r-lg); }
+.mh-bg-soft { background: linear-gradient(180deg, var(--mh-paper) 0%, var(--mh-paper-2) 100%); }
+.mh-input {
+  width: 100%;
+  border-radius: var(--mh-r);
+  border: 1px solid var(--mh-rule);
+  background: var(--mh-card);
+  padding: 0.8rem 0.95rem;
+  font-size: 0.9rem;
+  color: var(--mh-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mh-input::placeholder { color: color-mix(in oklab, var(--mh-muted) 70%, transparent); }
+.mh-input:focus {
+  outline: none;
+  border-color: var(--mh-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--mh-accent) 14%, transparent);
+}
+
+/* ------------------------------------------------------------------ Sections et décors */
+
+.mh-section {
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+}
+.mh-section > :not(.mh-decor) { position: relative; z-index: 1; }
+.mh-decor { position: absolute; pointer-events: none; z-index: 0; }
+.mh-dots {
+  background-image: radial-gradient(color-mix(in oklab, var(--mh-fg) 20%, transparent) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(to left, #000 10%, transparent 75%);
+  mask-image: linear-gradient(to left, #000 10%, transparent 75%);
+}
+.mh-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--mh-fg) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--mh-fg) 7%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 25%, transparent 75%);
+}
+/* Houle de la Méditerranée */
+.mh-waves {
+  background: color-mix(in oklab, var(--mh-accent) 40%, transparent);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28' viewBox='0 0 120 28'%3E%3Cpath d='M0 14 Q15 4 30 14 T60 14 T90 14 T120 14' fill='none' stroke='%23000' stroke-width='1.3'/%3E%3C/svg%3E"), radial-gradient(circle at center, #000 30%, transparent 70%);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28' viewBox='0 0 120 28'%3E%3Cpath d='M0 14 Q15 4 30 14 T60 14 T90 14 T120 14' fill='none' stroke='%23000' stroke-width='1.3'/%3E%3C/svg%3E"), radial-gradient(circle at center, #000 30%, transparent 70%);
+  -webkit-mask-repeat: repeat, no-repeat;
+  mask-repeat: repeat, no-repeat;
+  -webkit-mask-size: 120px 28px, 100% 100%;
+  mask-size: 120px 28px, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.mh-hatch {
+  background-image: repeating-linear-gradient(135deg, color-mix(in oklab, var(--mh-fg) 7%, transparent) 0 1px, transparent 1px 14px);
+  -webkit-mask-image: linear-gradient(to right, #000 5%, transparent 80%);
+  mask-image: linear-gradient(to right, #000 5%, transparent 80%);
+}
+
+/* ------------------------------------------------------------------ Contenu riche */
+
+.mh-prose { color: var(--mh-fg-2); font-size: 1.0625rem; line-height: 1.85; }
+.mh-prose > * + * { margin-top: 1.15em; }
+.mh-prose :is(h2, h3, h4) { color: var(--mh-fg); }
+.mh-prose h2 {
+  font-family: var(--mh-font-display);
+  font-weight: var(--mh-display-weight);
+  letter-spacing: var(--mh-display-tracking);
+  font-size: 2rem;
+  line-height: 1.15;
+  margin-top: 1.8em;
+}
+.mh-prose h3 { font-size: 1.3rem; line-height: 1.35; font-weight: 650; margin-top: 1.7em; }
+.mh-prose h4 { font-size: 1.1rem; font-weight: 650; margin-top: 1.5em; }
+.mh-prose a { color: var(--mh-accent-text); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.mh-prose strong { color: var(--mh-fg); font-weight: 650; }
+.mh-prose ul { list-style: none; padding-left: 0; }
+.mh-prose ul > li { position: relative; padding-left: 1.6em; }
+.mh-prose ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0.25em;
+  top: 0.7em;
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 999px;
+  background: var(--mh-accent);
+}
+.mh-prose ol { list-style: decimal; padding-left: 1.4em; }
+.mh-prose ol > li::marker { color: var(--mh-accent-text); font-weight: 650; }
+.mh-prose li + li { margin-top: 0.5em; }
+.mh-prose blockquote {
+  font-family: var(--mh-font-display);
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: var(--mh-fg);
+  border-left: 3px solid var(--mh-accent);
+  padding: 0.2em 0 0.2em 1.2em;
+}
+.mh-prose img { border-radius: var(--mh-r-lg); margin: 2.2em auto; }
+.mh-prose hr { border: 0; border-top: 1px solid var(--mh-rule); margin: 2.8em 0; }
+.mh-prose code { background: var(--mh-paper-2); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+.mh-prose [style*='text-align: center'] { text-align: center; }
+.mh-prose [style*='text-align: right'] { text-align: right; }
+.mh-prose > :first-child { margin-top: 0; }
+.mh-prose-lg { font-size: 1.2rem; }
+
+/* ------------------------------------------------------------------ Animations */
+
+.mh-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mh-reveal[data-anim='fade'] { transform: none; }
+.mh-reveal[data-anim='zoom'] { transform: scale(0.95); }
+.mh-reveal[data-anim='slide-left'] { transform: translateX(-48px); }
+.mh-reveal[data-anim='slide-right'] { transform: translateX(48px); }
+.mh-reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes mhMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes mhWordIn {
+  from { opacity: 0; transform: translateY(0.35em); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes mhFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes mhPulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--mh-accent) 55%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+@keyframes mhProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes mhKenBurns { from { transform: scale(1.08); } to { transform: scale(1); } }
+
+.mh-marquee { animation: mhMarquee 40s linear infinite; }
+.mh-marquee-slow { animation-duration: 60s; }
+.mh-marquee-fast { animation-duration: 22s; }
+.mh-marquee:hover { animation-play-state: paused; }
+.mh-word-in { animation: mhWordIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.mh-float { animation: mhFloat 7s ease-in-out infinite; }
+.mh-float-late { animation: mhFloat 8s ease-in-out 1.6s infinite; }
+.mh-live { animation: mhPulse 1.8s ease-out infinite; }
+.mh-progress { transform-origin: left; animation: mhProgress linear forwards; }
+.mh-kenburns { animation: mhKenBurns 7s ease-out both; }
+
+:root[data-mh-motion='off'] :is(.mh-marquee, .mh-word-in, .mh-float, .mh-float-late, .mh-live, .mh-kenburns) { animation: none !important; }
+:root[data-mh-motion='off'] .mh-progress { animation-name: none; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.mh-marquee, .mh-word-in, .mh-float, .mh-float-late, .mh-live, .mh-kenburns) { animation: none !important; }
+  .mh-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ------------------------------------------------------------------ En-tête */
+
+.mh-search {
+  width: 100%;
+  height: 2.75rem;
+  border-radius: var(--mh-r-btn);
+  border: 1px solid var(--mh-line);
+  background: var(--mh-paper);
+  padding: 0 1rem 0 2.75rem;
+  font-size: 0.9rem;
+  color: var(--mh-ink);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.mh-search::placeholder { color: var(--mh-muted); }
+.mh-search:focus {
+  outline: none;
+  background: var(--mh-card);
+  border-color: var(--mh-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--mh-accent) 14%, transparent);
+}
+.mh-search::-webkit-search-cancel-button { display: none; }
+
+/* ------------------------------------------------------------------ Divers */
+
+.mh-scroll-x { scrollbar-width: none; }
+.mh-scroll-x::-webkit-scrollbar { display: none; }
+.mh-details > summary { list-style: none; }
+.mh-details > summary::-webkit-details-marker { display: none; }

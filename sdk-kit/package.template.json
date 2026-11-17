@@ -1,0 +1,95 @@
+{
+  "name": "snapify-sdk",
+  "version": "1.3.1",
+  "description": "Kit développeur Snapify : SDK des modules et thèmes, outil de compilation et analyse marketplace.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "NOVALABS WEB DESIGN <contact@novalabs.tn> (https://novalabs.tn)",
+  "homepage": "https://developers.snapify.tn/docs/kit-developpeur",
+  "bugs": {
+    "email": "contact@novalabs.tn"
+  },
+  "keywords": [
+    "snapify",
+    "cms",
+    "module",
+    "theme",
+    "sdk",
+    "tunisie"
+  ],
+  "type": "module",
+  "bin": {
+    "snapify": "bin/snapify.mjs"
+  },
+  "types": "./dist/sdk/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/sdk/index.d.ts",
+      "default": "./dist/sdk/index.js"
+    },
+    "./admin": {
+      "types": "./dist/sdk/admin.d.ts",
+      "default": "./dist/sdk/admin.js"
+    },
+    "./theme": {
+      "types": "./dist/sdk/theme.d.ts",
+      "default": "./dist/sdk/theme.js"
+    },
+    "./content": {
+      "types": "./dist/sdk/content.d.ts",
+      "default": "./dist/sdk/content.js"
+    },
+    "./commerce": {
+      "types": "./dist/sdk/commerce.d.ts",
+      "default": "./dist/sdk/commerce.js"
+    },
+    "./image": {
+      "types": "./dist/sdk/image.d.ts",
+      "default": "./dist/sdk/image.js"
+    },
+    "./icons": {
+      "types": "./dist/sdk/icons.d.ts",
+      "default": "./dist/sdk/icons.js"
+    },
+    "./settings": {
+      "types": "./dist/sdk/settings.d.ts",
+      "default": "./dist/sdk/settings.js"
+    },
+    "./ui/commerce": {
+      "types": "./dist/sdk/ui/commerce.d.ts",
+      "default": "./dist/sdk/ui/commerce.js"
+    },
+    "./ui/orders": {
+      "types": "./dist/sdk/ui/orders.d.ts",
+      "default": "./dist/sdk/ui/orders.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "css",
+    "templates",
+    "README.md",
+    "LICENSE.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "esbuild": "^0.25.12",
+    "lucide-react": "^0.546.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.3"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

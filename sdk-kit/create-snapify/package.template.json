@@ -1,0 +1,16 @@
+{
+  "name": "create-snapify",
+  "version": "0.0.0",
+  "description": "Crée un projet de module ou de thème Snapify : npm create snapify@latest",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "NOVALABS WEB DESIGN <contact@novalabs.tn> (https://novalabs.tn)",
+  "homepage": "https://developers.snapify.tn/docs/kit-developpeur",
+  "bugs": { "email": "contact@novalabs.tn" },
+  "keywords": ["snapify", "create", "cms", "module", "theme", "starter"],
+  "type": "module",
+  "bin": { "create-snapify": "bin/create-snapify.mjs" },
+  "files": ["bin", "README.md", "LICENSE.md"],
+  "engines": { "node": "^20.19.0 || >=22.12.0" },
+  "dependencies": { "snapify": "0.0.0" },
+  "publishConfig": { "access": "public" }
+}

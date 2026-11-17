@@ -1,0 +1,217 @@
+{
+  "id": "novalabs.ai-chat",
+  "name": "Chat IA",
+  "version": "1.0.1",
+  "description": "Assistant conversationnel propulsé par Google Gemini : répond aux visiteurs selon vos consignes, avec limites d’usage par visiteur et quota quotidien.",
+  "author": {
+    "name": "NOVALABS WEB DESIGN",
+    "email": "contact@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "Contact",
+  "icon": "bot",
+  "engines": {
+    "snapify": "^1.0.0"
+  },
+  "permissions": [
+    "http:routes",
+    "env:GEMINI_API_KEY",
+    "net:generativelanguage.googleapis.com"
+  ],
+  "slots": [
+    "floating"
+  ],
+  "entries": {
+    "public": "src/public.tsx",
+    "server": "src/server.ts"
+  },
+  "settings": [
+    {
+      "key": "title",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Nom de l’assistant",
+      "default": "Assistant Snapify",
+      "public": true,
+      "maxLength": 40
+    },
+    {
+      "key": "subtitle",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Sous-titre",
+      "default": "En ligne · réponse immédiate",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "avatar",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Image de l’avatar",
+      "help": "Adresse d’une image de la médiathèque, ex. /images/photos/hammamet-medina-plage.jpg.",
+      "default": "/images/photos/hammamet-medina-plage.jpg",
+      "public": true,
+      "maxLength": 300
+    },
+    {
+      "key": "welcome",
+      "type": "textarea",
+      "group": "Apparence",
+      "label": "Message d’accueil",
+      "default": "Bonjour ! Je suis l’assistant du site. Comment puis-je vous aider ?",
+      "public": true,
+      "maxLength": 500,
+      "rows": 2
+    },
+    {
+      "key": "quickQuestions",
+      "type": "textarea",
+      "group": "Apparence",
+      "label": "Questions suggérées",
+      "help": "Une question par ligne (6 au maximum).",
+      "default": "Quels sont vos services ?\nComment vous contacter ?\nOù êtes-vous situés ?",
+      "public": true,
+      "maxLength": 600,
+      "rows": 4
+    },
+    {
+      "key": "placeholder",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Texte du champ de saisie",
+      "default": "Posez votre question…",
+      "public": true,
+      "maxLength": 80
+    },
+    {
+      "key": "contactLabel",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Lien vers le contact",
+      "help": "Vide : pas de lien.",
+      "default": "Parler à un conseiller",
+      "public": true,
+      "maxLength": 40
+    },
+    {
+      "key": "contactPath",
+      "type": "text",
+      "group": "Apparence",
+      "label": "Page de contact",
+      "default": "/contact/",
+      "public": true,
+      "maxLength": 200
+    },
+    {
+      "key": "position",
+      "type": "select",
+      "group": "Affichage",
+      "label": "Position",
+      "default": "bottom-left",
+      "public": true,
+      "options": [
+        {
+          "value": "bottom-left",
+          "label": "En bas à gauche"
+        },
+        {
+          "value": "bottom-right",
+          "label": "En bas à droite"
+        }
+      ]
+    },
+    {
+      "key": "showOnPages",
+      "type": "paths",
+      "group": "Affichage",
+      "label": "Pages concernées",
+      "help": "Vide : toutes les pages. Une adresse terminée par * inclut ses sous-pages (ex. /blog/*).",
+      "default": [],
+      "public": true
+    },
+    {
+      "key": "model",
+      "type": "select",
+      "group": "Modèle",
+      "label": "Modèle d’IA",
+      "default": "gemini-3.8-flash",
+      "options": [
+        {
+          "value": "gemini-3.8-flash",
+          "label": "Gemini 3.8 Flash — rapide et précis (recommandé)"
+        },
+        {
+          "value": "gemini-3.5-flash-lite",
+          "label": "Gemini 3.5 Flash Lite — le plus économique"
+        },
+        {
+          "value": "gemini-3.1-pro-preview",
+          "label": "Gemini 3.1 Pro (préversion) — réponses approfondies"
+        },
+        {
+          "value": "gemini-2.5-flash",
+          "label": "Gemini 2.5 Flash — version stable"
+        },
+        {
+          "value": "gemini-2.5-pro",
+          "label": "Gemini 2.5 Pro — version stable"
+        }
+      ]
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "group": "Modèle",
+      "label": "Créativité",
+      "help": "Plus la valeur est basse, plus les réponses sont factuelles. 0,2 à 0,4 recommandé.",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "slider": true
+    },
+    {
+      "key": "systemInstruction",
+      "type": "textarea",
+      "group": "Modèle",
+      "label": "Consignes de l’assistant",
+      "help": "Définissent son périmètre, ses connaissances et son ton. Jamais transmises aux visiteurs.",
+      "default": "Tu es l'assistant virtuel du site Snapify.\nRéponds en français, de façon courte, claire et polie, aux questions des visiteurs sur le site, ses services et la manière de prendre contact.\nNe donne jamais d'informations que tu ne connais pas avec certitude (prix, délais, coordonnées) : invite plutôt le visiteur à utiliser la page Contact.\nSi une question n'a aucun rapport avec le site, recentre poliment la discussion.",
+      "maxLength": 20000,
+      "rows": 12,
+      "monospace": true,
+      "required": true
+    },
+    {
+      "key": "maxMessagesPerSession",
+      "type": "number",
+      "group": "Limites d’utilisation",
+      "label": "Messages par conversation",
+      "default": 30,
+      "min": 1,
+      "max": 200
+    },
+    {
+      "key": "maxSessionsPerDayPerIp",
+      "type": "number",
+      "group": "Limites d’utilisation",
+      "label": "Conversations par visiteur et par jour",
+      "default": 20,
+      "min": 1,
+      "max": 500
+    },
+    {
+      "key": "maxTokensPerDayGlobal",
+      "type": "number",
+      "group": "Limites d’utilisation",
+      "label": "Quota global quotidien (tokens)",
+      "help": "Au-delà, l’assistant invite le visiteur à vous contacter directement. 0 = illimité.",
+      "default": 500000,
+      "min": 0,
+      "max": 100000000
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

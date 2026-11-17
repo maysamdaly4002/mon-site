@@ -1,0 +1,3 @@
+RewriteEngine On
+Redirect 301 /ancien-blog/ /blog/
+RewriteRule ^promo-ete$ /offres/ [R=301,L]

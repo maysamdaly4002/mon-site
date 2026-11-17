@@ -1,0 +1,16 @@
+/**
+ * Snapify
+ * © 2026 NOVALABS WEB DESIGN — Tunisie
+ * Contact : contact@novalabs.tn · +216 24 734 647
+ * Tous droits réservés. Toute reproduction, modification ou diffusion sans autorisation écrite est interdite.
+ */
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import AdminApp from './AdminApp';
+import './admin.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AdminApp />
+  </StrictMode>
+);

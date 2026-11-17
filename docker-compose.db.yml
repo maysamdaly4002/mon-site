@@ -1,0 +1,24 @@
+name: snapify
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: snapify-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: snapify
+      POSTGRES_USER: snapify
+      POSTGRES_PASSWORD: ${SNAPIFY_DB_PASSWORD:?SNAPIFY_DB_PASSWORD manquant}
+      TZ: Europe/Paris
+    ports:
+      - "127.0.0.1:${SNAPIFY_DB_PORT:-5433}:5432"
+    volumes:
+      - snapify_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U snapify -d snapify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  snapify_pgdata:

@@ -1,0 +1,21 @@
+{
+  "id": "novalabs.sidibou",
+  "name": "SidiBou",
+  "version": "1.0.0",
+  "description": "Thème lumineux inspiré de Sidi Bou Saïd : en-tête épuré, sections animées, cartes arrondies et pied de page sombre. Prend en charge les 25 blocs du constructeur.",
+  "author": { "name": "NOVALABS WEB DESIGN", "email": "contact@novalabs.tn", "url": "https://novalabs.tn" },
+  "pricing": "free",
+  "category": "Polyvalent",
+  "engines": { "snapify": "^1.1.0" },
+  "entries": { "public": "src/index.tsx" },
+  "screenshot": "screenshot.jpg",
+  "settings": [
+    { "key": "stickyHeader", "type": "boolean", "group": "En-tête", "label": "En-tête fixe", "help": "L’en-tête reste visible pendant le défilement.", "default": true },
+    { "key": "headerPhone", "type": "boolean", "group": "En-tête", "label": "Afficher le téléphone", "help": "Numéro cliquable à côté du bouton principal (ordinateur).", "default": true },
+    { "key": "buttonShape", "type": "select", "group": "Style", "label": "Forme des boutons", "default": "pill", "options": [ { "value": "pill", "label": "Arrondis (pilule)" }, { "value": "rounded", "label": "Coins adoucis" }, { "value": "square", "label": "Carrés" } ] },
+    { "key": "cardRadius", "type": "number", "group": "Style", "label": "Arrondi des cartes (px)", "default": 20, "min": 0, "max": 32, "step": 2, "slider": true },
+    { "key": "animations", "type": "boolean", "group": "Style", "label": "Animations", "help": "Apparition des sections, défilements et effets décoratifs.", "default": true },
+    { "key": "mobileBar", "type": "boolean", "group": "Mobile", "label": "Barre d’actions mobile", "help": "Boutons fixés en bas de l’écran sur mobile (réglables dans Boutons flottants).", "default": true },
+    { "key": "backToTop", "type": "boolean", "group": "Navigation", "label": "Bouton « Revenir en haut »", "default": false }
+  ]
+}

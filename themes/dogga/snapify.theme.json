@@ -1,0 +1,55 @@
+{
+  "id": "novalabs.dogga",
+  "name": "Dogga",
+  "version": "1.0.0",
+  "description": "Thème éditorial inspiré du site antique de Dougga : grands titres à empattements, palette pierre et terre cuite, images en arche et sections aérées. Élégant, sobre et professionnel ; prend en charge les 25 blocs du constructeur.",
+  "author": { "name": "NOVALABS WEB DESIGN", "email": "contact@novalabs.tn", "url": "https://novalabs.tn" },
+  "pricing": "free",
+  "category": "Corporate",
+  "engines": { "snapify": "^1.1.0" },
+  "entries": { "public": "src/index.tsx" },
+  "screenshot": "screenshot.jpg",
+  "settings": [
+    {
+      "key": "palette", "type": "select", "group": "Couleurs", "label": "Palette", "default": "stone",
+      "help": "« Identité visuelle » reprend les couleurs choisies dans Apparence > Identité visuelle.",
+      "options": [
+        { "value": "stone", "label": "Pierre (ivoire chaud)" },
+        { "value": "white", "label": "Blanc galerie" },
+        { "value": "brand", "label": "Identité visuelle du site" }
+      ]
+    },
+    {
+      "key": "accent", "type": "select", "group": "Couleurs", "label": "Couleur d’accent", "default": "terracotta",
+      "options": [
+        { "value": "terracotta", "label": "Terre cuite" },
+        { "value": "olive", "label": "Olivier" },
+        { "value": "indigo", "label": "Bleu nuit" },
+        { "value": "brand", "label": "Couleur principale du site" }
+      ]
+    },
+    {
+      "key": "typography", "type": "select", "group": "Typographie", "label": "Style des titres", "default": "editorial",
+      "options": [
+        { "value": "editorial", "label": "Éditorial (titres à empattements)" },
+        { "value": "modern", "label": "Moderne (sans empattements)" },
+        { "value": "brand", "label": "Polices de l’identité visuelle" }
+      ]
+    },
+    {
+      "key": "corners", "type": "select", "group": "Style", "label": "Angles", "default": "soft",
+      "options": [
+        { "value": "sharp", "label": "Nets" },
+        { "value": "soft", "label": "Adoucis" },
+        { "value": "round", "label": "Arrondis" }
+      ]
+    },
+    { "key": "arches", "type": "boolean", "group": "Style", "label": "Images en arche", "help": "Signature du thème : les visuels principaux prennent la forme d’une arche antique.", "default": true },
+    { "key": "animations", "type": "boolean", "group": "Style", "label": "Animations", "help": "Apparition des sections, défilements et compteurs.", "default": true },
+    { "key": "topBar", "type": "boolean", "group": "En-tête", "label": "Bandeau d’informations", "help": "Fine barre au-dessus de l’en-tête : slogan, téléphone et e-mail (ordinateur).", "default": true },
+    { "key": "stickyHeader", "type": "boolean", "group": "En-tête", "label": "En-tête fixe", "default": true },
+    { "key": "headerPhone", "type": "boolean", "group": "En-tête", "label": "Téléphone dans l’en-tête", "default": true },
+    { "key": "footerWordmark", "type": "boolean", "group": "Pied de page", "label": "Grand nom du site", "help": "Nom du site en très grand caractère au bas de chaque page.", "default": true },
+    { "key": "mobileBar", "type": "boolean", "group": "Mobile", "label": "Barre d’actions mobile", "help": "Boutons fixés en bas de l’écran sur mobile (réglables dans Boutons flottants).", "default": true }
+  ]
+}

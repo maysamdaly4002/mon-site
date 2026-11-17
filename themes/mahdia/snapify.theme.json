@@ -1,0 +1,65 @@
+{
+  "id": "novalabs.mahdia",
+  "name": "Mahdia",
+  "version": "1.0.0",
+  "description": "Thème boutique en ligne inspiré de Mahdia : sable, bleu de la Méditerranée et touches dorées. En-tête e-commerce avec recherche, compte, favoris et panier, barre de navigation mobile, réassurance et moyens de paiement. Conçu pour les modules Boutique, Panier, Commande et Espace client ; prend en charge les 25 blocs du constructeur.",
+  "author": { "name": "NOVALABS WEB DESIGN", "email": "contact@novalabs.tn", "url": "https://novalabs.tn" },
+  "pricing": "free",
+  "category": "E-commerce",
+  "engines": { "snapify": "^1.2.0" },
+  "entries": { "public": "src/index.tsx" },
+  "screenshot": "screenshot.jpg",
+  "settings": [
+    {
+      "key": "palette", "type": "select", "group": "Couleurs", "label": "Palette", "default": "sand",
+      "help": "« Identité visuelle » reprend les couleurs choisies dans Apparence > Identité visuelle.",
+      "options": [
+        { "value": "sand", "label": "Sable (blanc cassé chaud)" },
+        { "value": "white", "label": "Blanc pur" },
+        { "value": "brand", "label": "Identité visuelle du site" }
+      ]
+    },
+    {
+      "key": "accent", "type": "select", "group": "Couleurs", "label": "Couleur d’accent", "default": "sea",
+      "help": "Utilisée par les boutons, les prix promotionnels, les badges et les modules de la boutique.",
+      "options": [
+        { "value": "sea", "label": "Bleu Méditerranée" },
+        { "value": "gold", "label": "Or de Mahdia" },
+        { "value": "coral", "label": "Corail" },
+        { "value": "brand", "label": "Couleur principale du site" }
+      ]
+    },
+    {
+      "key": "typography", "type": "select", "group": "Typographie", "label": "Style des titres", "default": "modern",
+      "options": [
+        { "value": "modern", "label": "Moderne (Plus Jakarta Sans)" },
+        { "value": "elegant", "label": "Élégant (titres à empattements)" },
+        { "value": "brand", "label": "Polices de l’identité visuelle" }
+      ]
+    },
+    {
+      "key": "corners", "type": "select", "group": "Style", "label": "Angles", "default": "round",
+      "options": [
+        { "value": "sharp", "label": "Nets" },
+        { "value": "soft", "label": "Adoucis" },
+        { "value": "round", "label": "Arrondis" }
+      ]
+    },
+    { "key": "shapes", "type": "boolean", "group": "Style", "label": "Visuels en vague", "help": "Signature du thème : les visuels principaux ont deux coins opposés très arrondis.", "default": true },
+    { "key": "animations", "type": "boolean", "group": "Style", "label": "Animations", "help": "Apparition des sections, défilements et compteurs.", "default": true },
+    { "key": "announcement", "type": "boolean", "group": "En-tête", "label": "Bandeau d’annonce", "help": "Fine barre au-dessus de l’en-tête : livraison offerte, soldes, code promo…", "default": true },
+    { "key": "announcementText", "type": "text", "group": "En-tête", "label": "Texte du bandeau", "default": "Livraison offerte dès 150 DT · Paiement à la livraison partout en Tunisie", "maxLength": 140 },
+    { "key": "announcementLink", "type": "text", "group": "En-tête", "label": "Lien du bandeau", "help": "Facultatif, par exemple /boutique/?promo=1", "default": "/boutique/", "maxLength": 200 },
+    { "key": "stickyHeader", "type": "boolean", "group": "En-tête", "label": "En-tête fixe", "default": true },
+    { "key": "headerSearch", "type": "boolean", "group": "En-tête", "label": "Recherche de produits", "help": "Champ de recherche dans l’en-tête (module Boutique requis).", "default": true },
+    { "key": "reassurance", "type": "boolean", "group": "Pied de page", "label": "Bandeau de réassurance", "help": "Arguments affichés au-dessus du pied de page sur toutes les pages.", "default": true },
+    {
+      "key": "reassuranceItems", "type": "textarea", "group": "Pied de page", "label": "Arguments de réassurance",
+      "help": "Un argument par ligne, au format « Titre | texte » (4 au maximum).",
+      "default": "Livraison rapide | Partout en Tunisie sous 24 à 72 h\nPaiement à la livraison | Réglez en espèces à la réception\nRetours faciles | 14 jours pour changer d’avis\nService client | Lorem ipsum, du lundi au samedi",
+      "maxLength": 600, "rows": 4
+    },
+    { "key": "paymentBadges", "type": "boolean", "group": "Pied de page", "label": "Moyens de paiement", "help": "Pastilles « Paiement à la livraison », « Virement bancaire »… en bas de page.", "default": true },
+    { "key": "mobileBar", "type": "boolean", "group": "Mobile", "label": "Barre de navigation mobile", "help": "Accueil, boutique, favoris, compte et panier fixés en bas de l’écran sur mobile.", "default": true }
+  ]
+}

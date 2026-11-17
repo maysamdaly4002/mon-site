@@ -1,0 +1,45 @@
+{
+  "id": "novalabs.calendar",
+  "name": "Calendrier",
+  "version": "1.0.1",
+  "description": "Agenda d’événements : création et gestion dans l’administration, calendrier mensuel et liste sur le site, widget à placer dans vos pages.",
+  "author": { "name": "NOVALABS WEB DESIGN", "email": "contact@novalabs.tn", "url": "https://novalabs.tn" },
+  "pricing": "free",
+  "category": "Contenu",
+  "icon": "calendar",
+  "screenshot": "screenshot.jpg",
+  "engines": { "snapify": "^1.2.0" },
+  "permissions": ["http:routes", "admin:routes", "database"],
+  "slots": [],
+  "routes": ["/agenda/*", "/calendrier/*"],
+  "entries": { "public": "src/public/index.tsx", "server": "src/server.ts", "admin": "src/admin/index.tsx" },
+  "adminPages": [
+    { "id": "events", "label": "Événements", "icon": "calendar" }
+  ],
+  "widgets": [
+    {
+      "id": "upcoming",
+      "label": "Prochains événements",
+      "description": "Liste des prochains événements à venir.",
+      "fields": [
+        { "key": "title", "type": "text", "label": "Titre", "default": "À venir", "maxLength": 80 },
+        { "key": "limit", "type": "number", "label": "Nombre d’événements", "default": 5, "min": 1, "max": 20 },
+        { "key": "buttonLabel", "type": "text", "label": "Bouton agenda", "default": "Voir l’agenda", "maxLength": 40 }
+      ]
+    },
+    {
+      "id": "month",
+      "label": "Calendrier du mois",
+      "description": "Vue mensuelle avec les jours qui ont des événements.",
+      "fields": [
+        { "key": "title", "type": "text", "label": "Titre", "default": "Calendrier", "maxLength": 80 }
+      ]
+    }
+  ],
+  "settings": [
+    { "key": "pageTitle", "type": "text", "group": "Page publique", "label": "Titre de la page agenda", "default": "Agenda", "public": true, "maxLength": 80 },
+    { "key": "pageIntro", "type": "textarea", "group": "Page publique", "label": "Introduction", "default": "Retrouvez nos prochains événements et rendez-vous.", "public": true, "maxLength": 400, "rows": 2 },
+    { "key": "timezone", "type": "text", "group": "Page publique", "label": "Fuseau horaire (affichage)", "default": "Africa/Tunis", "public": true, "maxLength": 60 },
+    { "key": "showPast", "type": "boolean", "group": "Page publique", "label": "Afficher aussi les événements passés", "default": false, "public": true }
+  ]
+}

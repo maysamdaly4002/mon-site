@@ -1,0 +1,121 @@
+{
+  "id": "novalabs.whatsapp",
+  "name": "WhatsApp",
+  "version": "1.0.1",
+  "description": "Bouton flottant qui ouvre une conversation WhatsApp avec un message pré-rempli. Position, pages et appareils configurables.",
+  "author": {
+    "name": "NOVALABS WEB DESIGN",
+    "email": "contact@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "Contact",
+  "icon": "message-circle",
+  "engines": {
+    "snapify": "^1.0.0"
+  },
+  "permissions": [],
+  "slots": [
+    "floating"
+  ],
+  "entries": {
+    "public": "src/public.tsx"
+  },
+  "settings": [
+    {
+      "key": "number",
+      "type": "phone",
+      "group": "Conversation",
+      "label": "Numéro WhatsApp",
+      "help": "Format international, ex. +216 24 734 647. Vide : le téléphone des informations générales du site.",
+      "default": "",
+      "public": true,
+      "maxLength": 30,
+      "placeholder": "+216 24 734 647"
+    },
+    {
+      "key": "defaultMessage",
+      "type": "textarea",
+      "group": "Conversation",
+      "label": "Message pré-rempli",
+      "help": "Texte proposé au visiteur à l’ouverture de WhatsApp.",
+      "default": "Bonjour, je souhaite avoir plus d’informations.",
+      "public": true,
+      "maxLength": 500,
+      "rows": 2
+    },
+    {
+      "key": "title",
+      "type": "text",
+      "group": "Fenêtre",
+      "label": "Titre",
+      "default": "Discutons sur WhatsApp",
+      "public": true,
+      "maxLength": 60
+    },
+    {
+      "key": "greeting",
+      "type": "textarea",
+      "group": "Fenêtre",
+      "label": "Message d’accueil",
+      "default": "👋 Bonjour ! Une question ? Écrivez-nous, nous vous répondons rapidement.",
+      "public": true,
+      "maxLength": 300,
+      "rows": 2
+    },
+    {
+      "key": "tooltip",
+      "type": "text",
+      "group": "Fenêtre",
+      "label": "Info-bulle (ordinateur)",
+      "help": "Vide : pas d’info-bulle.",
+      "default": "Besoin d’aide ?",
+      "public": true,
+      "maxLength": 40
+    },
+    {
+      "key": "position",
+      "type": "select",
+      "group": "Affichage",
+      "label": "Position",
+      "default": "bottom-right",
+      "public": true,
+      "options": [
+        {
+          "value": "bottom-right",
+          "label": "En bas à droite"
+        },
+        {
+          "value": "bottom-left",
+          "label": "En bas à gauche"
+        }
+      ]
+    },
+    {
+      "key": "showOnDesktop",
+      "type": "boolean",
+      "group": "Affichage",
+      "label": "Afficher sur ordinateur",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "showOnMobile",
+      "type": "boolean",
+      "group": "Affichage",
+      "label": "Afficher sur mobile",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "showOnPages",
+      "type": "paths",
+      "group": "Affichage",
+      "label": "Pages concernées",
+      "help": "Vide : toutes les pages. Une adresse terminée par * inclut ses sous-pages (ex. /blog/*).",
+      "default": [],
+      "public": true
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

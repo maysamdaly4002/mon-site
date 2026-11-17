@@ -1,0 +1,39 @@
+{
+  "format": "snapify-wp-seo/1",
+  "site": { "url": "https://demo-wp.example/" },
+  "plugins": [
+    { "id": "wordpress-seo", "name": "Yoast SEO", "active": true },
+    { "id": "seo-by-rank-math", "name": "Rank Math", "active": false }
+  ],
+  "records": [
+    {
+      "id": "1",
+      "kind": "page",
+      "url": "https://demo-wp.example/",
+      "path": "/",
+      "slug": "home",
+      "status": "publish",
+      "title": "Accueil",
+      "seoTitle": "Boutique démo — Accueil",
+      "metaDescription": "Bienvenue sur notre boutique démo WordPress migrée vers Snapify.",
+      "focusKeyphrase": "boutique démo",
+      "canonicalUrl": "https://demo-wp.example/",
+      "sources": { "seoTitle": "yoast", "metaDescription": "yoast" }
+    },
+    {
+      "id": "2",
+      "kind": "post",
+      "url": "https://demo-wp.example/blog/bonjour/",
+      "path": "/blog/bonjour",
+      "slug": "bonjour",
+      "status": "publish",
+      "title": "Bonjour",
+      "seoTitle": "Bonjour le monde",
+      "metaDescription": "Premier article de blog.",
+      "sources": { "seoTitle": "yoast" }
+    }
+  ],
+  "redirects": [
+    { "from": "/ancienne-page/", "to": "/", "permanent": true }
+  ]
+}

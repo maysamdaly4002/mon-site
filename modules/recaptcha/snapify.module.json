@@ -1,0 +1,99 @@
+{
+  "id": "hamdiayari.recaptcha",
+  "name": "Google reCAPTCHA",
+  "version": "1.0.0",
+  "description": "Protégez vos formulaires de contact contre le spam et les robots avec Google reCAPTCHA v2 ou v3. Configurez vos clés site et secrète depuis l’administration ; le widget s’affiche automatiquement sur les formulaires du site.",
+  "author": {
+    "name": "Hamdi Ayari",
+    "email": "hamdi.ayari@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "paid",
+  "category": "Contact",
+  "icon": "shield-check",
+  "screenshot": "screenshot.jpg",
+  "engines": {
+    "snapify": "^1.3.0"
+  },
+  "permissions": [
+    "http:routes",
+    "net:www.google.com"
+  ],
+  "slots": [
+    "floating"
+  ],
+  "entries": {
+    "public": "src/public/index.tsx",
+    "server": "src/server.ts"
+  },
+  "settings": [
+    {
+      "key": "enabled",
+      "type": "boolean",
+      "group": "Activation",
+      "label": "Activer reCAPTCHA sur les formulaires",
+      "default": true,
+      "public": true
+    },
+    {
+      "key": "version",
+      "type": "select",
+      "group": "Activation",
+      "label": "Version",
+      "default": "v2",
+      "public": true,
+      "options": [
+        {
+          "value": "v2",
+          "label": "reCAPTCHA v2 (case à cocher)"
+        },
+        {
+          "value": "v3",
+          "label": "reCAPTCHA v3 (score invisible)"
+        }
+      ]
+    },
+    {
+      "key": "siteKey",
+      "type": "text",
+      "group": "Clés Google",
+      "label": "Clé du site (Site key)",
+      "help": "Visible par les visiteurs. Obtenez-la sur https://www.google.com/recaptcha/admin",
+      "default": "",
+      "public": true,
+      "maxLength": 120,
+      "placeholder": "6Lc…"
+    },
+    {
+      "key": "secretKey",
+      "type": "text",
+      "group": "Clés Google",
+      "label": "Clé secrète (Secret key)",
+      "help": "Conservée uniquement sur le serveur. Jamais exposée aux visiteurs.",
+      "default": "",
+      "maxLength": 120,
+      "placeholder": "6Lc…"
+    },
+    {
+      "key": "v3Action",
+      "type": "text",
+      "group": "reCAPTCHA v3",
+      "label": "Action v3",
+      "help": "Nom d’action envoyé à Google (ex. contact).",
+      "default": "contact",
+      "public": true,
+      "maxLength": 40
+    },
+    {
+      "key": "v3MinScore",
+      "type": "number",
+      "group": "reCAPTCHA v3",
+      "label": "Score minimum (0–1)",
+      "help": "En dessous de ce score, l’envoi est refusé. 0,5 est un bon départ.",
+      "default": 0.5,
+      "min": 0,
+      "max": 1
+    }
+  ],
+  "priceMillimes": 49000
+}

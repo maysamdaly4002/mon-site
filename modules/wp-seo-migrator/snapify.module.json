@@ -1,0 +1,87 @@
+{
+  "id": "hamdiayari.wp-seo-migrator",
+  "name": "WP SEO Migrator",
+  "version": "1.2.4",
+  "description": "Migrez le référencement WordPress vers Snapify en 1 clic : saisissez l’adresse du site, l’assistant lit titres, meta et redirections automatiquement (REST, sitemap, crawl). Option FTP. Sans jargon.",
+  "author": {
+    "name": "Hamdi Ayari",
+    "email": "hamdi.ayari@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "SEO",
+  "icon": "search",
+  "engines": {
+    "snapify": "^1.3.0"
+  },
+  "permissions": [
+    "admin:routes",
+    "database",
+    "storage",
+    "files",
+    "mail:send",
+    "site:read",
+    "net:outbound",
+    "net:ftp"
+  ],
+  "slots": [],
+  "entries": {
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "wizard",
+      "label": "Migrer le SEO",
+      "icon": "search"
+    },
+    {
+      "id": "history",
+      "label": "Historique",
+      "icon": "chart-bar"
+    }
+  ],
+  "settings": [
+    {
+      "key": "uiLang",
+      "type": "select",
+      "group": "Interface",
+      "label": "Langue de l’assistant",
+      "default": "fr",
+      "options": [
+        {
+          "value": "fr",
+          "label": "Français"
+        },
+        {
+          "value": "en",
+          "label": "English"
+        },
+        {
+          "value": "ar",
+          "label": "العربية"
+        }
+      ]
+    },
+    {
+      "key": "watchDays",
+      "type": "number",
+      "group": "Après migration",
+      "label": "Jours de surveillance des 404",
+      "help": "Alertes simples si d’anciennes URL renvoient une erreur.",
+      "default": 30,
+      "min": 0,
+      "max": 90
+    },
+    {
+      "key": "notifyEmail",
+      "type": "text",
+      "group": "Après migration",
+      "label": "E-mail de notification",
+      "help": "Vide = e-mail du site. Utilisé à la fin de la migration.",
+      "default": "",
+      "maxLength": 200
+    }
+  ],
+  "screenshot": "screenshot.jpg"
+}

@@ -1,0 +1,56 @@
+# Snapify CMS
+> CMS moderne (Node, sans PHP) pour créer sites vitrine, blogs et boutiques en ligne — Tunisie & France.
+> Éditeur : NOVALABS WEB DESIGN · contact@novalabs.tn · +216 24 734 647
+
+## Produit
+- Nom : Snapify CMS
+- Stack : Node.js (hors stack PHP / CVE classiques)
+- Fonctions : constructeur par blocs, génération IA, e-commerce, multi-domaines, marketplace modules/thèmes, communauté
+- Migration : WordPress, Prestashop, sites maison
+- Installation : 48 h sur l’hébergement client
+
+## Tarifs
+- Tunisie (snapify.tn) : 699 DT / an · paiement Flouci
+- France & international (snapify.fr) : 99 € / an
+
+## Domaines
+- https://snapify.tn/ — marché Tunisie
+- https://snapify.fr/ — marché France / international
+- https://marketplace.snapify.tn/ — modules & thèmes
+- https://community.snapify.tn/ — forum
+
+## Pages clés
+- https://snapify.tn/seo-tunisie — CMS Tunisie, villes, e-commerce
+- https://snapify.fr/seo-france — CMS France, alternative WordPress
+- https://snapify.fr/alternative-wordpress — Comparatif vs WordPress
+- https://snapify.fr/alternative-wix — Alternative Wix
+- https://snapify.tn/creation-site-web-tunisie — Création site Tunisie
+- https://snapify.fr/creation-site-web-france — Création site France
+- https://snapify.tn/agence-web-tunisie — Vs agences (Medianet, Novatis…)
+- https://snapify.tn/guides · https://snapify.fr/guides — Hub guides SEO
+- https://snapify.tn/guides/tarif-site-web-tunisie-2026 — Tarif site TN 2026
+- https://snapify.fr/guides/wix-vs-cms-self-hosted — Wix vs CMS
+- https://snapify.tn/guides/migrer-wordpress-48h — Migration WP 48 h
+- https://snapify.tn/guides/referencement-tunisie-france — Checklist SEO
+- https://snapify.tn/cas-clients · https://snapify.fr/cas-clients — Preuves
+- https://snapify.tn/referencement — Méthode référencement
+- https://snapify.tn/commander · https://snapify.fr/commander — commande
+- https://snapify.tn/demo/ — démo publique
+
+## Mots-clés cibles — Tunisie
+création site web Tunisie, créateur site web Tunisie, créer site internet Tunisie,
+création site web Tunis, Sfax, Sousse, Nabeul, Monastir, site vitrine Tunisie,
+boutique en ligne Tunisie, e-commerce Tunisie, paiement Flouci, CMS Tunisie,
+agence web Tunisie, agence web Tunis, tarif / prix / coût site web Tunisie,
+migration WordPress Tunisie, alternative WordPress Tunisie, alternative Wix Tunisie,
+référencement Tunisie, SEO Tunisie, site web IA Tunisie, Snapify, NOVALABS
+
+## Mots-clés cibles — France
+création site web France, créateur de site web, CMS France, CMS IA, site web IA,
+alternative Wix, alternative Shopify, alternative Squarespace, alternative WordPress,
+création site web Paris Lyon Marseille Toulouse Nantes Bordeaux Lille Nice,
+boutique en ligne France, site vitrine France, migration WordPress, référencement Google,
+SEO France, créer site web 99 euros, Snapify CMS
+
+## Contact
+contact@novalabs.tn

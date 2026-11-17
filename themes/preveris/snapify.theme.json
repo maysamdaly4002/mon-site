@@ -1,0 +1,126 @@
+{
+  "id": "hamdiayari.preveris",
+  "name": "Preveris",
+  "version": "1.0.6",
+  "description": "Thème Design 2026 pour bureaux d’études sécurité incendie et accessibilité ERP. Minimaliste, aéré, typographie Poppins moderne, accent orangé feu, fonds bleu nuit, verre dépoli et animations subtiles. Mobile first, mode sombre élégant.",
+  "author": {
+    "name": "Hamdi Ayari",
+    "email": "hamdi.ayari@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "priceMillimes": 0,
+  "category": "Corporate",
+  "engines": { "snapify": "^1.3.0" },
+  "entries": { "public": "src/index.tsx" },
+  "screenshot": "screenshot.jpg",
+  "settings": [
+    {
+      "key": "palette",
+      "type": "select",
+      "group": "Couleurs",
+      "label": "Fond clair",
+      "default": "brand",
+      "help": "Blanc cassé / gris très clair pour les sections claires.",
+      "options": [
+        { "value": "brand", "label": "Identité visuelle du site (recommandé)" },
+        { "value": "mist", "label": "Brume (blanc cassé)" },
+        { "value": "white", "label": "Blanc pur" }
+      ]
+    },
+    {
+      "key": "accent",
+      "type": "select",
+      "group": "Couleurs",
+      "label": "Accent",
+      "default": "brand",
+      "options": [
+        { "value": "brand", "label": "Couleur principale de l’identité visuelle" },
+        { "value": "ember", "label": "Orangé feu (Preveris)" },
+        { "value": "flame", "label": "Orange chaud" }
+      ]
+    },
+    {
+      "key": "typography",
+      "type": "select",
+      "group": "Typographie",
+      "label": "Style des titres",
+      "default": "modern",
+      "options": [
+        { "value": "modern", "label": "Poppins (moderne, gras)" },
+        { "value": "editorial", "label": "Éditorial" },
+        { "value": "brand", "label": "Polices de l’identité visuelle" }
+      ]
+    },
+    {
+      "key": "corners",
+      "type": "select",
+      "group": "Style",
+      "label": "Coins",
+      "default": "round",
+      "options": [
+        { "value": "soft", "label": "Adoucis" },
+        { "value": "round", "label": "Arrondis (recommandé)" },
+        { "value": "sharp", "label": "Nets" }
+      ]
+    },
+    {
+      "key": "glass",
+      "type": "boolean",
+      "group": "Style",
+      "label": "Verre dépoli",
+      "help": "Effets glassmorphism discrets sur l’en-tête et certaines cartes.",
+      "default": true
+    },
+    {
+      "key": "arches",
+      "type": "boolean",
+      "group": "Style",
+      "label": "Images en arche",
+      "default": false
+    },
+    {
+      "key": "animations",
+      "type": "boolean",
+      "group": "Style",
+      "label": "Animations",
+      "help": "Apparition au scroll, compteurs, survols de cartes.",
+      "default": true
+    },
+    {
+      "key": "topBar",
+      "type": "boolean",
+      "group": "En-tête",
+      "label": "Bandeau d’informations",
+      "default": true
+    },
+    {
+      "key": "stickyHeader",
+      "type": "boolean",
+      "group": "En-tête",
+      "label": "En-tête fixe",
+      "default": true
+    },
+    {
+      "key": "headerPhone",
+      "type": "boolean",
+      "group": "En-tête",
+      "label": "Téléphone dans l’en-tête",
+      "default": true
+    },
+    {
+      "key": "footerWordmark",
+      "type": "boolean",
+      "group": "Pied de page",
+      "label": "Grand nom du site",
+      "default": true
+    },
+    {
+      "key": "mobileBar",
+      "type": "boolean",
+      "group": "Mobile",
+      "label": "Barre d’actions mobile",
+      "default": true
+    }
+  ]
+}

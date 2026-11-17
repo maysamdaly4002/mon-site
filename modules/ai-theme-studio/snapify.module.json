@@ -1,0 +1,175 @@
+{
+  "id": "hamdiayari.ai-theme-studio",
+  "name": "Atelier thème IA",
+  "version": "1.1.4",
+  "description": "Décrivez votre marque : l’IA génère identité, boutons, structure de page, images (IA ou stock) et blocs CMS prêts pour l’éditeur. OpenAI, Claude ou Gemini.",
+  "author": {
+    "name": "Hamdi Ayari",
+    "email": "hamdi.ayari@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "Apparence",
+  "icon": "sparkles",
+  "screenshot": "screenshot.jpg",
+  "engines": {
+    "snapify": "^1.3.0"
+  },
+  "permissions": [
+    "admin:routes",
+    "database",
+    "storage",
+    "files",
+    "site:read",
+    "net:api.openai.com",
+    "net:api.anthropic.com",
+    "net:generativelanguage.googleapis.com"
+  ],
+  "slots": [],
+  "entries": {
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "studio",
+      "label": "Atelier thème IA",
+      "icon": "sparkles"
+    },
+    {
+      "id": "history",
+      "label": "Générations",
+      "icon": "history"
+    }
+  ],
+  "settings": [
+    {
+      "key": "provider",
+      "type": "select",
+      "group": "Fournisseur IA",
+      "label": "Fournisseur",
+      "help": "Utilisé pour générer identité, style et page d’accueil.",
+      "default": "openai",
+      "options": [
+        {
+          "value": "openai",
+          "label": "ChatGPT (OpenAI)"
+        },
+        {
+          "value": "anthropic",
+          "label": "Claude (Anthropic)"
+        },
+        {
+          "value": "gemini",
+          "label": "Gemini (Google)"
+        }
+      ]
+    },
+    {
+      "key": "apiKey",
+      "type": "text",
+      "group": "Fournisseur IA",
+      "label": "Clé API",
+      "help": "Conservée uniquement sur le serveur. Jamais exposée aux visiteurs.",
+      "default": "",
+      "maxLength": 200,
+      "placeholder": "sk-… / AIza… / sk-ant-…"
+    },
+    {
+      "key": "openaiModel",
+      "type": "select",
+      "group": "Modèles",
+      "label": "Modèle OpenAI",
+      "default": "gpt-4o",
+      "options": [
+        {
+          "value": "gpt-4o-mini",
+          "label": "GPT-4o mini (économique)"
+        },
+        {
+          "value": "gpt-4o",
+          "label": "GPT-4o (recommandé)"
+        }
+      ]
+    },
+    {
+      "key": "anthropicModel",
+      "type": "select",
+      "group": "Modèles",
+      "label": "Modèle Claude",
+      "default": "claude-sonnet-5-5",
+      "options": [
+        {
+          "value": "claude-sonnet-5-5",
+          "label": "Claude Sonnet 5.5 (recommandé)"
+        },
+        {
+          "value": "claude-haiku-5-5",
+          "label": "Claude Haiku 5.5 (rapide)"
+        },
+        {
+          "value": "claude-sonnet-4-6",
+          "label": "Claude Sonnet 4.6"
+        }
+      ]
+    },
+    {
+      "key": "geminiModel",
+      "type": "select",
+      "group": "Modèles",
+      "label": "Modèle Gemini",
+      "default": "gemini-3.8-flash",
+      "options": [
+        {
+          "value": "gemini-3.8-flash",
+          "label": "Gemini 3.8 Flash (recommandé)"
+        },
+        {
+          "value": "gemini-3.5-flash-lite",
+          "label": "Gemini 3.5 Flash-Lite"
+        },
+        {
+          "value": "gemini-2.5-flash",
+          "label": "Gemini 2.5 Flash"
+        }
+      ]
+    },
+    {
+      "key": "defaultLang",
+      "type": "select",
+      "group": "Génération",
+      "label": "Langue des textes",
+      "default": "fr",
+      "options": [
+        {
+          "value": "fr",
+          "label": "Français"
+        },
+        {
+          "value": "ar",
+          "label": "Arabe"
+        },
+        {
+          "value": "en",
+          "label": "English"
+        }
+      ]
+    },
+    {
+      "key": "autoApplyHome",
+      "type": "boolean",
+      "group": "Génération",
+      "label": "Proposer la page d’accueil générée",
+      "help": "L’atelier prépare des blocs CMS compatibles avec l’éditeur visuel.",
+      "default": true
+    },
+    {
+      "key": "generateImages",
+      "type": "boolean",
+      "group": "Génération",
+      "label": "Générer des images (IA)",
+      "help": "OpenAI (DALL·E) ou Gemini (Imagen). Claude : images Unsplash adaptées au secteur. Désactiver = stock uniquement (plus rapide).",
+      "default": true
+    }
+  ]
+}

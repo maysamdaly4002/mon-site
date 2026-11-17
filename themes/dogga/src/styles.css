@@ -1,0 +1,396 @@
+/**
+ * Snapify
+ * © 2026 NOVALABS WEB DESIGN — Tunisie
+ * Contact : contact@novalabs.tn · +216 24 734 647
+ * Tous droits réservés. Toute reproduction, modification ou diffusion sans autorisation écrite est interdite.
+ */
+/*
+ * Thème Dogga. Les options (palette, accent, typographie, angles) sont posées par Layout.tsx
+ * sous forme d'attributs data-dg-* sur <html> ; tout le thème lit les variables --dg-*.
+ */
+
+/* ------------------------------------------------------------------ Palettes */
+
+:root {
+  --dg-paper: #f5f1ea;
+  --dg-paper-2: #ece5d9;
+  --dg-card: #fbf9f5;
+  --dg-ink: #1a1612;
+  --dg-ink-2: #2a241e;
+  --dg-muted: #6f665b;
+  --dg-line: #ddd3c4;
+
+  --dg-accent: #b4532a;
+  --dg-on-accent: #ffffff;
+
+  --dg-font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --dg-font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --dg-display-weight: 400;
+  --dg-display-tracking: -0.015em;
+  --dg-display-leading: 1.02;
+
+  --dg-r: 10px;
+  --dg-r-lg: 18px;
+  --dg-r-btn: 10px;
+}
+
+:root[data-dg-palette='white'] {
+  --dg-paper: #ffffff;
+  --dg-paper-2: #f3f2ef;
+  --dg-card: #ffffff;
+  --dg-ink: #111111;
+  --dg-ink-2: #222222;
+  --dg-muted: #63605b;
+  --dg-line: #e5e3df;
+}
+
+:root[data-dg-palette='brand'] {
+  --dg-paper: var(--px-surface);
+  --dg-paper-2: var(--px-surface-2);
+  --dg-card: #ffffff;
+  --dg-ink: var(--px-navy);
+  --dg-ink-2: var(--px-navy-2);
+  --dg-muted: var(--px-muted);
+  --dg-line: var(--px-border);
+}
+
+:root[data-dg-accent='olive'] { --dg-accent: #5d6a2e; }
+:root[data-dg-accent='indigo'] { --dg-accent: #2d3d78; }
+:root[data-dg-accent='brand'] { --dg-accent: var(--px-primary); --dg-on-accent: var(--px-navy); }
+
+:root[data-dg-type='modern'] {
+  --dg-font-display: 'Manrope', system-ui, sans-serif;
+  --dg-display-weight: 700;
+  --dg-display-tracking: -0.035em;
+  --dg-display-leading: 1.04;
+}
+:root[data-dg-type='brand'] {
+  --dg-font-display: var(--px-font-heading), var(--px-font-body), system-ui, sans-serif;
+  --dg-font-body: var(--px-font-body), system-ui, sans-serif;
+  --dg-display-weight: 600;
+  --dg-display-tracking: -0.025em;
+  --dg-display-leading: 1.06;
+}
+
+:root[data-dg-corners='sharp'] { --dg-r: 2px; --dg-r-lg: 3px; --dg-r-btn: 2px; }
+:root[data-dg-corners='round'] { --dg-r: 16px; --dg-r-lg: 30px; --dg-r-btn: 999px; }
+
+/* Couleurs sémantiques : claires par défaut, inversées dans les sections sombres. */
+:root,
+.dg-light {
+  --dg-fg: var(--dg-ink);
+  --dg-fg-2: var(--dg-muted);
+  --dg-rule: var(--dg-line);
+  --dg-surface: var(--dg-card);
+  --dg-accent-text: color-mix(in oklab, var(--dg-accent) 88%, black);
+  --dg-btn-bg: var(--dg-accent);
+  --dg-btn-fg: var(--dg-on-accent);
+}
+:root[data-dg-accent='brand'],
+:root[data-dg-accent='brand'] .dg-light {
+  --dg-accent-text: var(--px-primary-dark);
+}
+.dg-dark {
+  --dg-fg: #f5f0e8;
+  --dg-fg-2: color-mix(in oklab, #f5f0e8 66%, transparent);
+  --dg-rule: color-mix(in oklab, #ffffff 14%, transparent);
+  --dg-surface: color-mix(in oklab, #ffffff 5%, transparent);
+  --dg-accent-text: color-mix(in oklab, var(--dg-accent) 55%, white);
+}
+.dg-brand {
+  --dg-fg: var(--dg-on-accent);
+  --dg-fg-2: color-mix(in oklab, var(--dg-on-accent) 78%, transparent);
+  --dg-accent-text: var(--dg-on-accent);
+  --dg-btn-bg: var(--dg-on-accent);
+  --dg-btn-fg: var(--dg-accent);
+}
+
+/* ------------------------------------------------------------------ Base */
+
+html.dg-html,
+html.dg-html body {
+  background: var(--dg-paper);
+}
+.dg-root {
+  font-family: var(--dg-font-body);
+  color: var(--dg-fg);
+  background: var(--dg-paper);
+  min-height: 100vh;
+}
+/* Coquille de page fournie par l'hôte : ses couleurs par défaut ne doivent pas masquer celles du thème. */
+.dg-root > .min-h-screen {
+  background: transparent;
+  color: inherit;
+}
+.dg-root :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--dg-font-body);
+}
+.dg-root ::selection {
+  background: color-mix(in oklab, var(--dg-accent) 25%, transparent);
+}
+.dg-display,
+.dg-root .dg-display {
+  font-family: var(--dg-font-display);
+  font-weight: var(--dg-display-weight);
+  letter-spacing: var(--dg-display-tracking);
+  line-height: var(--dg-display-leading);
+  text-wrap: balance;
+}
+.dg-em {
+  font-style: italic;
+  color: var(--dg-accent-text);
+}
+:root[data-dg-type='modern'] .dg-em,
+:root[data-dg-type='brand'] .dg-em {
+  font-style: normal;
+}
+.dg-num {
+  font-family: var(--dg-font-display);
+  font-weight: var(--dg-display-weight);
+  letter-spacing: var(--dg-display-tracking);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ------------------------------------------------------------------ Boutons et liens */
+
+.dg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--dg-r-btn);
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.dg-btn:active { transform: translateY(1px); }
+.dg-btn-lg { padding: 1.05rem 1.9rem; font-size: 0.95rem; }
+.dg-btn-arrow { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.dg-btn:hover .dg-btn-arrow, .dg-link:hover .dg-btn-arrow { transform: translateX(4px); }
+
+.dg-btn-primary {
+  background: var(--dg-btn-bg);
+  color: var(--dg-btn-fg);
+  box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--dg-btn-bg) 70%, transparent);
+}
+.dg-btn-primary:hover {
+  background: var(--dg-fg);
+  color: var(--dg-paper);
+  box-shadow: none;
+}
+.dg-dark .dg-btn-primary:hover { background: #fff; color: var(--dg-ink); }
+.dg-btn-outline {
+  color: var(--dg-fg);
+  border-color: color-mix(in oklab, var(--dg-fg) 35%, transparent);
+  background: transparent;
+}
+.dg-btn-outline:hover { border-color: var(--dg-fg); background: var(--dg-fg); color: var(--dg-paper); }
+.dg-dark .dg-btn-outline:hover { color: var(--dg-ink); background: #fff; }
+.dg-btn-dark { background: var(--dg-ink); color: #f5f0e8; }
+.dg-btn-dark:hover { background: var(--dg-accent); color: var(--dg-on-accent); }
+.dg-btn-light { background: #fff; color: var(--dg-ink); }
+.dg-btn-light:hover { background: var(--dg-paper-2); }
+.dg-btn-glass {
+  background: color-mix(in oklab, #fff 12%, transparent);
+  color: #fff;
+  border-color: color-mix(in oklab, #fff 28%, transparent);
+  backdrop-filter: blur(8px);
+}
+.dg-btn-glass:hover { background: color-mix(in oklab, #fff 22%, transparent); }
+
+.dg-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dg-fg);
+  padding-bottom: 0.2rem;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: color 0.2s, background-size 0.35s;
+  cursor: pointer;
+}
+.dg-link:hover { color: var(--dg-accent-text); }
+
+/* ------------------------------------------------------------------ Surfaces */
+
+.dg-card {
+  background: var(--dg-surface);
+  border: 1px solid var(--dg-rule);
+  border-radius: var(--dg-r-lg);
+}
+.dg-card-hover {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.3s;
+}
+.dg-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--dg-fg) 25%, transparent);
+  box-shadow: 0 30px 60px -35px color-mix(in oklab, var(--dg-ink) 45%, transparent);
+}
+.dg-arch { border-radius: 999px 999px var(--dg-r-lg) var(--dg-r-lg); }
+.dg-bg-soft { background: linear-gradient(180deg, var(--dg-paper) 0%, var(--dg-paper-2) 100%); }
+.dg-input {
+  width: 100%;
+  border-radius: var(--dg-r);
+  border: 1px solid var(--dg-rule);
+  background: var(--dg-card);
+  padding: 0.8rem 0.95rem;
+  font-size: 0.9rem;
+  color: var(--dg-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dg-input::placeholder { color: color-mix(in oklab, var(--dg-muted) 70%, transparent); }
+.dg-input:focus {
+  outline: none;
+  border-color: var(--dg-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dg-accent) 14%, transparent);
+}
+
+/* ------------------------------------------------------------------ Sections et décors */
+
+.dg-section {
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+}
+.dg-section > :not(.dg-decor) { position: relative; z-index: 1; }
+.dg-decor { position: absolute; pointer-events: none; z-index: 0; }
+.dg-dots {
+  background-image: radial-gradient(color-mix(in oklab, var(--dg-fg) 22%, transparent) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(to left, #000 10%, transparent 75%);
+  mask-image: linear-gradient(to left, #000 10%, transparent 75%);
+}
+.dg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--dg-fg) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--dg-fg) 7%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 25%, transparent 75%);
+}
+/* Gradins d'un théâtre antique */
+.dg-rings {
+  background-image: repeating-radial-gradient(circle at center, transparent 0 46px, color-mix(in oklab, var(--dg-accent) 22%, transparent) 46px 47px);
+  -webkit-mask-image: radial-gradient(circle at center, #000 35%, transparent 70%);
+  mask-image: radial-gradient(circle at center, #000 35%, transparent 70%);
+}
+.dg-hatch {
+  background-image: repeating-linear-gradient(135deg, color-mix(in oklab, var(--dg-fg) 7%, transparent) 0 1px, transparent 1px 14px);
+  -webkit-mask-image: linear-gradient(to right, #000 5%, transparent 80%);
+  mask-image: linear-gradient(to right, #000 5%, transparent 80%);
+}
+
+/* ------------------------------------------------------------------ Contenu riche */
+
+.dg-prose { color: var(--dg-fg-2); font-size: 1.0625rem; line-height: 1.85; }
+.dg-prose > * + * { margin-top: 1.15em; }
+.dg-prose :is(h2, h3, h4) { color: var(--dg-fg); }
+.dg-prose h2 {
+  font-family: var(--dg-font-display);
+  font-weight: var(--dg-display-weight);
+  letter-spacing: var(--dg-display-tracking);
+  font-size: 2.1rem;
+  line-height: 1.15;
+  margin-top: 1.8em;
+}
+.dg-prose h3 { font-size: 1.3rem; line-height: 1.35; font-weight: 600; margin-top: 1.7em; }
+.dg-prose h4 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5em; }
+.dg-prose a { color: var(--dg-accent-text); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.dg-prose strong { color: var(--dg-fg); font-weight: 650; }
+.dg-prose ul { list-style: none; padding-left: 0; }
+.dg-prose ul > li { position: relative; padding-left: 1.6em; }
+.dg-prose ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0.2em;
+  top: 0.8em;
+  width: 0.55em;
+  height: 1px;
+  background: var(--dg-accent);
+}
+.dg-prose ol { list-style: decimal; padding-left: 1.4em; }
+.dg-prose ol > li::marker { color: var(--dg-accent-text); font-weight: 600; }
+.dg-prose li + li { margin-top: 0.5em; }
+.dg-prose blockquote {
+  font-family: var(--dg-font-display);
+  font-size: 1.6rem;
+  line-height: 1.35;
+  color: var(--dg-fg);
+  border-left: 2px solid var(--dg-accent);
+  padding: 0.2em 0 0.2em 1.2em;
+}
+.dg-prose img { border-radius: var(--dg-r-lg); margin: 2.2em auto; }
+.dg-prose hr { border: 0; border-top: 1px solid var(--dg-rule); margin: 2.8em 0; }
+.dg-prose code { background: var(--dg-paper-2); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+.dg-prose [style*='text-align: center'] { text-align: center; }
+.dg-prose [style*='text-align: right'] { text-align: right; }
+.dg-prose > :first-child { margin-top: 0; }
+.dg-prose-lg { font-size: 1.2rem; }
+
+/* ------------------------------------------------------------------ Animations */
+
+.dg-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dg-reveal[data-anim='fade'] { transform: none; }
+.dg-reveal[data-anim='zoom'] { transform: scale(0.95); }
+.dg-reveal[data-anim='slide-left'] { transform: translateX(-48px); }
+.dg-reveal[data-anim='slide-right'] { transform: translateX(48px); }
+.dg-reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes dgMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes dgWordIn {
+  from { opacity: 0; transform: translateY(0.35em); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes dgFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes dgPulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--dg-accent) 55%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+@keyframes dgProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dgKenBurns { from { transform: scale(1.08); } to { transform: scale(1); } }
+
+.dg-marquee { animation: dgMarquee 40s linear infinite; }
+.dg-marquee-slow { animation-duration: 60s; }
+.dg-marquee-fast { animation-duration: 22s; }
+.dg-marquee:hover { animation-play-state: paused; }
+.dg-word-in { animation: dgWordIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.dg-float { animation: dgFloat 7s ease-in-out infinite; }
+.dg-float-late { animation: dgFloat 8s ease-in-out 1.6s infinite; }
+.dg-live { animation: dgPulse 1.8s ease-out infinite; }
+.dg-progress { transform-origin: left; animation: dgProgress linear forwards; }
+.dg-kenburns { animation: dgKenBurns 7s ease-out both; }
+
+:root[data-dg-motion='off'] :is(.dg-marquee, .dg-word-in, .dg-float, .dg-float-late, .dg-live, .dg-kenburns) { animation: none !important; }
+:root[data-dg-motion='off'] .dg-progress { animation-name: none; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.dg-marquee, .dg-word-in, .dg-float, .dg-float-late, .dg-live, .dg-kenburns) { animation: none !important; }
+  .dg-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ------------------------------------------------------------------ Divers */
+
+.dg-wordmark {
+  font-family: var(--dg-font-display);
+  font-weight: var(--dg-display-weight);
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  font-size: clamp(5rem, 19vw, 19rem);
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, #f5f0e8 22%, transparent);
+  white-space: nowrap;
+  user-select: none;
+}
+.dg-scroll-x { scrollbar-width: none; }
+.dg-scroll-x::-webkit-scrollbar { display: none; }
+.dg-details > summary { list-style: none; }
+.dg-details > summary::-webkit-details-marker { display: none; }

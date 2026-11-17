@@ -1,0 +1,18 @@
+/**
+ * Snapify
+ * © 2026 NOVALABS WEB DESIGN — Tunisie
+ * Contact : contact@novalabs.tn · +216 24 734 647
+ * Tous droits réservés. Toute reproduction, modification ou diffusion sans autorisation écrite est interdite.
+ */
+/* Couleurs de l'administration disponibles dans les pages d'administration des modules (bg-brand-600…). */
+@theme inline reference {
+  --color-brand-50: #e6faf8;
+  --color-brand-100: #c2f2ee;
+  --color-brand-200: #8fe6df;
+  --color-brand-500: #00c6ba;
+  --color-brand-600: #00a89d;
+  --color-brand-700: #00867d;
+  --color-navy-800: #111d33;
+  --color-navy-900: #0b1528;
+  --color-navy-950: #070e1c;
+}

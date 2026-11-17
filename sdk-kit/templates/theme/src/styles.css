@@ -1,0 +1,71 @@
+/*
+ * Les couleurs `px-*` (bg-px-primary, text-px-navy…) suivent l’identité visuelle du site.
+ * Préfixez vos classes (ici `st-`) pour ne pas entrer en conflit avec celles des modules.
+ */
+.st-root {
+  font-family: var(--px-font-body, system-ui, sans-serif);
+}
+.st-root h1,
+.st-root h2,
+.st-root h3 {
+  font-family: var(--px-font-heading, inherit);
+}
+
+.st-container {
+  width: min(100% - 2.5rem, 80rem);
+  margin-inline: auto;
+}
+
+.st-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: background-color 0.15s, color 0.15s;
+}
+.st-btn-primary {
+  background: var(--px-primary);
+  color: #fff;
+}
+.st-btn-primary:hover {
+  background: var(--px-primary-dark);
+}
+.st-btn-outline {
+  border: 1px solid currentColor;
+}
+
+.st-prose > * + * {
+  margin-top: 1em;
+}
+.st-prose h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 1.6em;
+}
+.st-prose h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 1.4em;
+}
+.st-prose a {
+  color: var(--px-primary);
+  text-decoration: underline;
+}
+.st-prose ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+.st-prose ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+.st-prose blockquote {
+  border-left: 3px solid var(--px-primary);
+  padding-left: 1rem;
+  font-style: italic;
+}
+.st-prose img {
+  border-radius: 1rem;
+}

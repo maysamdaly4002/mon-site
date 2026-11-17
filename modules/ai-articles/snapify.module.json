@@ -1,0 +1,74 @@
+{
+  "id": "novalabs.ai-articles",
+  "name": "Articles IA",
+  "version": "1.0.2",
+  "description": "Générez des articles de blog (titre, texte et image) avec ChatGPT, Claude ou Gemini. Vous choisissez le fournisseur, saisissez votre clé API, et publiez depuis l’administration.",
+  "author": { "name": "NOVALABS WEB DESIGN", "email": "contact@novalabs.tn", "url": "https://novalabs.tn" },
+  "pricing": "paid",
+  "category": "Contenu",
+  "icon": "sparkles",
+  "screenshot": "screenshot.jpg",
+  "engines": { "snapify": "^1.3.0" },
+  "permissions": [
+    "http:routes",
+    "admin:routes",
+    "database",
+    "files",
+    "net:api.openai.com",
+    "net:api.anthropic.com",
+    "net:generativelanguage.googleapis.com"
+  ],
+  "slots": [],
+  "routes": ["/articles-ia/*", "/blog-ia/*"],
+  "entries": { "public": "src/public/index.tsx", "server": "src/server.ts", "admin": "src/admin/index.tsx" },
+  "adminPages": [
+    { "id": "generate", "label": "Générer", "icon": "sparkles" },
+    { "id": "articles", "label": "Articles", "icon": "file-text" }
+  ],
+  "widgets": [
+    {
+      "id": "latest",
+      "label": "Derniers articles IA",
+      "description": "Grille des derniers articles générés et publiés.",
+      "fields": [
+        { "key": "title", "type": "text", "label": "Titre", "default": "Articles récents", "maxLength": 80 },
+        { "key": "limit", "type": "number", "label": "Nombre d’articles", "default": 6, "min": 1, "max": 12 }
+      ]
+    }
+  ],
+  "settings": [
+    { "key": "provider", "type": "select", "group": "Fournisseur IA", "label": "Fournisseur", "help": "Le fournisseur utiliséé pour générer le texte (et l’image si disponible).", "default": "openai", "options": [
+      { "value": "openai", "label": "ChatGPT (OpenAI)" },
+      { "value": "anthropic", "label": "Claude (Anthropic)" },
+      { "value": "gemini", "label": "Gemini (Google)" }
+    ] },
+    { "key": "apiKey", "type": "text", "group": "Fournisseur IA", "label": "Clé API", "help": "Conservée uniquement sur le serveur. Jamais exposée aux visiteurs.", "default": "", "maxLength": 200, "placeholder": "sk-… / AIza… / sk-ant-…" },
+    { "key": "openaiModel", "type": "select", "group": "Modèles", "label": "Modèle OpenAI", "default": "gpt-4o-mini", "options": [
+      { "value": "gpt-4o-mini", "label": "GPT-4o mini (économique)" },
+      { "value": "gpt-4o", "label": "GPT-4o" }
+    ] },
+    { "key": "anthropicModel", "type": "select", "group": "Modèles", "label": "Modèle Claude", "default": "claude-sonnet-5-5", "options": [
+      { "value": "claude-sonnet-5-5", "label": "Claude Sonnet 5.5 (recommandé)" },
+      { "value": "claude-haiku-5-5", "label": "Claude Haiku 5.5 (rapide)" },
+      { "value": "claude-sonnet-4-6", "label": "Claude Sonnet 4.6" }
+    ] },
+    { "key": "geminiModel", "type": "select", "group": "Modèles", "label": "Modèle Gemini", "default": "gemini-3.8-flash", "options": [
+      { "value": "gemini-3.8-flash", "label": "Gemini 3.8 Flash (recommandé)" },
+      { "value": "gemini-3.5-flash-lite", "label": "Gemini 3.5 Flash-Lite" },
+      { "value": "gemini-2.5-flash", "label": "Gemini 2.5 Flash" }
+    ] },
+    { "key": "generateImages", "type": "boolean", "group": "Images", "label": "Générer une image de couverture", "help": "OpenAI (DALL·E) et Gemini. Claude : image non disponible, une couverture neutre est proposée.", "default": true },
+    { "key": "defaultTone", "type": "select", "group": "Rédaction", "label": "Ton par défaut", "default": "pro", "options": [
+      { "value": "pro", "label": "Professionnel" },
+      { "value": "friendly", "label": "Convivial" },
+      { "value": "expert", "label": "Expert / technique" }
+    ] },
+    { "key": "defaultLang", "type": "select", "group": "Rédaction", "label": "Langue", "default": "fr", "public": true, "options": [
+      { "value": "fr", "label": "Français" },
+      { "value": "ar", "label": "Arabe (Darija / littéral selon le sujet)" },
+      { "value": "en", "label": "English" }
+    ] },
+    { "key": "pageTitle", "type": "text", "group": "Site", "label": "Titre de la rubrique", "default": "Blog", "public": true, "maxLength": 80 },
+    { "key": "pageIntro", "type": "textarea", "group": "Site", "label": "Introduction", "default": "Articles générés avec l’assistance de l’IA, relu et publié par votre équipe.", "public": true, "maxLength": 400, "rows": 2 }
+  ]
+}

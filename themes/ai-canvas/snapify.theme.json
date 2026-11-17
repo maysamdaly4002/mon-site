@@ -1,0 +1,96 @@
+{
+  "id": "hamdiayari.ai-canvas",
+  "name": "AI Canvas",
+  "version": "1.0.1",
+  "description": "Thème paramétrique conçu pour l’atelier IA : les 25 blocs du constructeur, identité visuelle Snapify, en-tête e-commerce (header-actions). À activer après une génération dans « Atelier thème IA ».",
+  "author": {
+    "name": "Hamdi Ayari",
+    "email": "hamdi.ayari@novalabs.tn",
+    "url": "https://novalabs.tn"
+  },
+  "pricing": "free",
+  "category": "Polyvalent",
+  "engines": {
+    "snapify": "^1.3.0"
+  },
+  "entries": {
+    "public": "src/index.tsx"
+  },
+  "screenshot": "screenshot.jpg",
+  "settings": [
+    {
+      "key": "stickyHeader",
+      "type": "boolean",
+      "group": "En-tête",
+      "label": "En-tête fixe",
+      "help": "L’en-tête reste visible pendant le défilement.",
+      "default": true
+    },
+    {
+      "key": "headerPhone",
+      "type": "boolean",
+      "group": "En-tête",
+      "label": "Afficher le téléphone",
+      "help": "Numéro cliquable à côté du bouton principal (ordinateur).",
+      "default": true
+    },
+    {
+      "key": "buttonShape",
+      "type": "select",
+      "group": "Style",
+      "label": "Forme des boutons",
+      "default": "pill",
+      "options": [
+        { "value": "pill", "label": "Arrondis (pilule)" },
+        { "value": "rounded", "label": "Coins adoucis" },
+        { "value": "square", "label": "Carrés" }
+      ]
+    },
+    {
+      "key": "cardRadius",
+      "type": "number",
+      "group": "Style",
+      "label": "Arrondi des cartes (px)",
+      "default": 20,
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "slider": true
+    },
+    {
+      "key": "density",
+      "type": "select",
+      "group": "Style",
+      "label": "Densité",
+      "default": "comfortable",
+      "options": [
+        { "value": "compact", "label": "Compacte" },
+        { "value": "comfortable", "label": "Confortable" },
+        { "value": "airy", "label": "Aérée" }
+      ]
+    },
+    {
+      "key": "animations",
+      "type": "boolean",
+      "group": "Style",
+      "label": "Animations",
+      "help": "Apparition des sections et effets décoratifs.",
+      "default": true
+    },
+    {
+      "key": "mobileBar",
+      "type": "boolean",
+      "group": "Mobile",
+      "label": "Barre d’actions mobile",
+      "help": "Boutons fixés en bas de l’écran sur mobile.",
+      "default": true
+    },
+    {
+      "key": "backToTop",
+      "type": "boolean",
+      "group": "Navigation",
+      "label": "Bouton « Revenir en haut »",
+      "default": false
+    }
+  ]
+}
