@@ -1,0 +1,38 @@
+{
+  "id": "ziyneb.newsletter-campaigns",
+  "name": "Campagnes newsletter",
+  "version": "0.1.0",
+  "description": "Inscription avec double confirmation, liste d’abonnés, rédaction et envoi de campagnes par lots, désinscription en un clic.",
+  "author": { "name": "Ziyneb", "email": "contact@exemple.tn", "url": "https://exemple.tn" },
+  "pricing": "free",
+  "category": "Contact",
+  "icon": "mail",
+  "engines": { "snapify": "^1.2.0" },
+  "permissions": ["http:routes", "admin:routes", "database", "env:BREVO_API_KEY", "net:api.brevo.com"],
+  "slots": [],
+  "routes": ["/newsletter/*"],
+  "entries": { "public": "src/public/index.tsx", "server": "src/server.ts", "admin": "src/admin/index.tsx" },
+  "adminPages": [
+    { "id": "campaigns", "label": "Campagnes", "icon": "mail" },
+    { "id": "subscribers", "label": "Abonnés", "icon": "database" }
+  ],
+  "widgets": [
+    {
+      "id": "signup",
+      "label": "Formulaire d’inscription",
+      "description": "Champ e-mail et bouton d’inscription à la newsletter.",
+      "fields": [
+        { "key": "title", "type": "text", "label": "Titre", "default": "Restez informé", "maxLength": 80 },
+        { "key": "buttonLabel", "type": "text", "label": "Texte du bouton", "default": "Je m’inscris", "maxLength": 40 }
+      ]
+    }
+  ],
+  "settings": [
+    { "key": "senderName", "type": "text", "group": "Expéditeur", "label": "Nom de l’expéditeur", "default": "Snapify", "maxLength": 80, "required": true },
+    { "key": "senderEmail", "type": "text", "group": "Expéditeur", "label": "Adresse d’envoi (validée chez Brevo)", "default": "newsletter@exemple.tn", "maxLength": 120, "required": true },
+    { "key": "publicUrl", "type": "text", "group": "Expéditeur", "label": "URL publique du site (sans / final)", "default": "http://localhost:3000", "maxLength": 200, "required": true },
+    { "key": "batchSize", "type": "number", "group": "Envoi", "label": "E-mails par lot", "default": 40, "min": 5, "max": 100 },
+    { "key": "confirmSubject", "type": "text", "group": "Inscription", "label": "Objet de l’e-mail de confirmation", "default": "Confirmez votre inscription à la newsletter", "maxLength": 120 },
+    { "key": "footerText", "type": "textarea", "group": "Envoi", "label": "Pied de page des e-mails", "default": "Vous recevez cet e-mail car vous êtes inscrit à notre newsletter.", "rows": 2, "maxLength": 300 }
+  ]
+}
