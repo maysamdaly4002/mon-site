@@ -6,3 +6,8 @@ dist/
 *.pem
 *.key
 data/
+
+marketplace/
+layout.txt
+crm-context.txt
+crm-sdk.txt
