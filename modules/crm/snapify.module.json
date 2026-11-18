@@ -1,0 +1,22 @@
+{
+  "id": "local.crm",
+  "name": "CRM",
+  "version": "0.1.0",
+  "description": "CRM léger : contacts, entreprises, pipeline de ventes (kanban), historique des échanges et capture de leads depuis le site.",
+  "author": { "name": "Candidat" },
+  "pricing": "free",
+  "category": "Marketing",
+  "icon": "users",
+  "engines": { "snapify": "^1.3.0" },
+  "permissions": ["http:routes", "admin:routes", "database"],
+  "entries": {
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    { "id": "dashboard", "label": "CRM — Tableau de bord", "icon": "layout-dashboard" },
+    { "id": "contacts", "label": "Contacts", "icon": "users" },
+    { "id": "companies", "label": "Entreprises", "icon": "building" },
+    { "id": "pipeline", "label": "Pipeline", "icon": "kanban" }
+  ]
+}
