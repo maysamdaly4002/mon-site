@@ -1,0 +1,1457 @@
+{
+  "info": {
+    "name": "API Prévention incendie ERP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "etablissementId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST /auth/login — Connexion : renvoie un jeton (valable 8 h)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/auth/login",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /dashboard — Taux de conformité, retards, non-conformités par établissement",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/dashboard",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "dashboard"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /etablissements — Établissements du périmètre de l'utilisateur",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/etablissements",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "etablissements"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /etablissement — Fiche + bâtiments + niveaux",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/etablissement",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "etablissement"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /etablissement/save — Crée (admin) ou modifie (id) un établissement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/etablissement/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "etablissement",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"nom\": \"\",\n  \"typeActivite\": \"\",\n  \"categorie\": \"\",\n  \"effectifMax\": \"\",\n  \"adresse\": \"\",\n  \"emailAlertes\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /batiment/add — Ajoute un bâtiment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/batiment/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "batiment",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"etablissementId\": \"\",\n  \"nom\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /niveau/add — Ajoute un niveau",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/niveau/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "niveau",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"batimentId\": \"\",\n  \"nom\": \"\",\n  \"ordre\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /types — Types d'équipement et règles de périodicité",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/types",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "types"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /type/save — Crée un type d'équipement (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/type/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "type",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"code\": \"\",\n  \"libelle\": \"\",\n  \"periodiciteDefautMois\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /regle/save — Crée/modifie une règle (type × catégorie) et recalcule les échéances (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/regle/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "regle",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"typeEquipementId\": \"\",\n  \"categorie\": \"\",\n  \"periodiciteMois\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /equipements — Inventaire filtrable et paginé",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/equipements",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "equipements"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "typeId",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "statut",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "etat",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "q",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "size",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /equipement — Équipement + historique des contrôles",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/equipement",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "equipement"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /equipement/qr — Retrouve un équipement par son QR code",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/equipement/qr",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "equipement",
+            "qr"
+          ],
+          "query": [
+            {
+              "key": "code",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /equipement/save — Crée (QR généré) ou modifie (id) un équipement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/equipement/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "equipement",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"etablissementId\": \"\",\n  \"typeId\": \"\",\n  \"libelle\": \"\",\n  \"dateMiseEnService\": \"\",\n  \"niveauId\": \"\",\n  \"emplacement\": \"\",\n  \"statut\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /controle/add — Saisit un contrôle (crée la non-conformité si négatif, inscrit au registre)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/controle/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "controle",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"equipementId\": \"\",\n  \"date\": \"\",\n  \"resultat\": \"\",\n  \"controleur\": \"\",\n  \"observations\": \"\",\n  \"photo\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /controles — Contrôles d'un établissement",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/controles",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "controles"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": false
+            },
+            {
+              "key": "page",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "size",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /document — Photo jointe à un contrôle (base64)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/document",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "document"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /non-conformites — Liste des non-conformités",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/non-conformites",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "non-conformites"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "statut",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /non-conformite — Non-conformité + plan d'action",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/non-conformite",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "non-conformite"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /action/add — Ajoute une action corrective",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/action/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "action",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nonConformiteId\": \"\",\n  \"description\": \"\",\n  \"responsable\": \"\",\n  \"echeance\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /action/update — Modifie une action (statut…)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/action/update",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "action",
+            "update"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"statut\": \"\",\n  \"description\": \"\",\n  \"responsable\": \"\",\n  \"echeance\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /non-conformite/lever — Lève la non-conformité (toutes les actions terminées)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/non-conformite/lever",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "non-conformite",
+            "lever"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"note\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /registre — Registre (plus récent d'abord) + vérification d'intégrité",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/registre",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "registre"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": false
+            },
+            {
+              "key": "type",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "size",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /registre/verify — Revérifie toute la chaîne de hachage",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/registre/verify",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "registre",
+            "verify"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /registre/pdf — Export PDF du registre (application/pdf)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/registre/pdf",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "registre",
+            "pdf"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": false
+            },
+            {
+              "key": "from",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "to",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /registre/intervention — Inscrit une intervention",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/registre/intervention",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "registre",
+            "intervention"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"etablissementId\": \"\",\n  \"date\": \"\",\n  \"intervenant\": \"\",\n  \"description\": \"\",\n  \"equipementId\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /registre/correction — Corrige une entrée par une NOUVELLE entrée liée",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/registre/correction",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "registre",
+            "correction"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entryId\": \"\",\n  \"motif\": \"\",\n  \"correction\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /exercices — Exercices et formations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/exercices",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "exercices"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "",
+              "disabled": false
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /exercice/add — Inscrit un exercice/une formation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/exercice/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "exercice",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"etablissementId\": \"\",\n  \"type\": \"\",\n  \"date\": \"\",\n  \"participants\": \"\",\n  \"dureeMin\": \"\",\n  \"observations\": \"\",\n  \"recyclageMois\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /visites — Visites de la commission et prescriptions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/visites?etablissementId={{etablissementId}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "visites"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "{{etablissementId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /visite/add — Enregistre une visite et ses prescriptions (registre)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/visite/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "visite",
+            "add"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"etablissementId\": \"{{etablissementId}}\",\n  \"date\": \"2026-11-01\",\n  \"avis\": \"favorable\",\n  \"president\": \"Commission régionale\",\n  \"observations\": \"\",\n  \"prochaineVisite\": \"2027-11-01\",\n  \"prescriptions\": [\n    {\n      \"description\": \"Remplacer le BAES du couloir\",\n      \"responsable\": \"Karim\",\n      \"echeance\": \"2026-12-15\"\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /prescription/add — Ajoute une prescription à une visite",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/prescription/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "prescription",
+            "add"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"visiteId\": \"\",\n  \"description\": \"\",\n  \"responsable\": \"\",\n  \"echeance\": \"2026-12-15\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /prescription/update — Met à jour / lève une prescription",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/prescription/update",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "prescription",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"statut\": \"levee\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /plans — Plans d'étage et positions des équipements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/plans?etablissementId={{etablissementId}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "plans"
+          ],
+          "query": [
+            {
+              "key": "etablissementId",
+              "value": "{{etablissementId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /plan/save — Importe ou remplace le plan d'un niveau",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/plan/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "plan",
+            "save"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"etablissementId\": \"{{etablissementId}}\",\n  \"niveauId\": \"\",\n  \"nom\": \"RDC\",\n  \"image\": {\n    \"nom\": \"rdc.png\",\n    \"mime\": \"image/png\",\n    \"base64\": \"<image en base64>\"\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /plan/position — Place / déplace / retire un équipement (x=y=null)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base}}/plan/position",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "plan",
+            "position"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"planId\": \"\",\n  \"equipementId\": \"\",\n  \"x\": 25.5,\n  \"y\": 60\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /alertes/run — Envoie les alertes d'échéance (idempotent ; cron ; admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/alertes/run",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "alertes",
+            "run"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /users/add — Crée un utilisateur (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/users/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "users",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"nom\": \"\",\n  \"role\": \"\",\n  \"password\": \"\",\n  \"etablissementIds\": \"\"\n}"
+        }
+      }
+    }
+  ]
+}

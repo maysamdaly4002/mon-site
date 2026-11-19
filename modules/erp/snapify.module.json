@@ -1,0 +1,70 @@
+{
+  "id": "local.erp-incendie",
+  "name": "Prévention incendie (ERP)",
+  "version": "0.1.0",
+  "description": "Suivi de conformité incendie des établissements recevant du public : équipements à QR code, contrôles planifiés, non-conformités, registre de sécurité infalsifiable exportable en PDF.",
+  "author": {
+    "name": "Candidat"
+  },
+  "pricing": "free",
+  "category": "Sécurité",
+  "icon": "flame",
+  "engines": {
+    "snapify": "^1.3.0"
+  },
+  "permissions": [
+    "admin:routes",
+    "database"
+  ],
+  "entries": {
+    "server": "src/server.ts",
+    "admin": "src/admin/index.tsx"
+  },
+  "adminPages": [
+    {
+      "id": "dashboard",
+      "label": "Incendie — Tableau de bord",
+      "icon": "layout-dashboard"
+    },
+    {
+      "id": "etablissements",
+      "label": "Établissements",
+      "icon": "building"
+    },
+    {
+      "id": "controles",
+      "label": "Saisie d'un contrôle",
+      "icon": "clipboard-check"
+    },
+    {
+      "id": "non-conformites",
+      "label": "Non-conformités",
+      "icon": "alert-triangle"
+    },
+    {
+      "id": "registre",
+      "label": "Registre de sécurité",
+      "icon": "shield-check"
+    },
+    {
+      "id": "exercices",
+      "label": "Exercices et formations",
+      "icon": "users"
+    },
+    {
+      "id": "visites",
+      "label": "Commission de sécurité",
+      "icon": "landmark"
+    },
+    {
+      "id": "plans",
+      "label": "Plans d'étage",
+      "icon": "map"
+    },
+    {
+      "id": "regles",
+      "label": "Règles de périodicité",
+      "icon": "settings"
+    }
+  ]
+}

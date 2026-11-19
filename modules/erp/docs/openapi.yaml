@@ -1,0 +1,706 @@
+openapi: 3.0.3
+info:
+  title: API Prévention incendie ERP
+  version: 0.1.0
+  description: |
+    API REST du module (src/standalone.ts). Toutes les routes sauf /auth/login exigent `Authorization: Bearer <jeton>`.
+    Erreurs : `{ "error": { "code", "message", "details" } }` — 400 validation, 401 non authentifié, 403 droits/périmètre, 404, 409 conflit métier.
+    Le registre est en ajout seul : aucune route de modification ou de suppression n'existe.
+servers: [{ url: http://localhost:3000/api }]
+security: [{ bearer: [] }]
+components:
+  securitySchemes:
+    bearer: { type: http, scheme: bearer, bearerFormat: JWT }
+paths:
+  /auth/login:
+    post:
+      summary: "Connexion : renvoie un jeton (valable 8 h)"
+      tags: [auth]
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { description: "email" }
+                password: { description: "password" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /dashboard:
+    get:
+      summary: "Taux de conformité, retards, non-conformités par établissement"
+      tags: [dashboard]
+      parameters:
+        - { name: etablissementId, in: query, required: false, schema: { type: string }, description: "etablissementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /etablissements:
+    get:
+      summary: "Établissements du périmètre de l'utilisateur"
+      tags: [etablissements]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /etablissement:
+    get:
+      summary: "Fiche + bâtiments + niveaux"
+      tags: [etablissement]
+      parameters:
+        - { name: id, in: query, required: true, schema: { type: string }, description: "id" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /etablissement/save:
+    post:
+      summary: "Crée (admin) ou modifie (id) un établissement"
+      tags: [etablissement]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nom, typeActivite, categorie, effectifMax]
+              properties:
+                id: { description: "id" }
+                nom: { description: "nom" }
+                typeActivite: { description: "typeActivite" }
+                categorie: { description: "categorie (1-5)" }
+                effectifMax: { description: "effectifMax" }
+                adresse: { description: "adresse" }
+                emailAlertes: { description: "emailAlertes" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /batiment/add:
+    post:
+      summary: "Ajoute un bâtiment"
+      tags: [batiment]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, nom]
+              properties:
+                etablissementId: { description: "etablissementId" }
+                nom: { description: "nom" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /niveau/add:
+    post:
+      summary: "Ajoute un niveau"
+      tags: [niveau]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [batimentId, nom]
+              properties:
+                batimentId: { description: "batimentId" }
+                nom: { description: "nom" }
+                ordre: { description: "ordre" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /types:
+    get:
+      summary: "Types d'équipement et règles de périodicité"
+      tags: [types]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /type/save:
+    post:
+      summary: "Crée un type d'équipement (admin)"
+      tags: [type]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, libelle, periodiciteDefautMois]
+              properties:
+                code: { description: "code" }
+                libelle: { description: "libelle" }
+                periodiciteDefautMois: { description: "periodiciteDefautMois" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /regle/save:
+    post:
+      summary: "Crée/modifie une règle (type × catégorie) et recalcule les échéances (admin)"
+      tags: [regle]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [typeEquipementId, periodiciteMois]
+              properties:
+                typeEquipementId: { description: "typeEquipementId" }
+                categorie: { description: "categorie (vide = toutes)" }
+                periodiciteMois: { description: "periodiciteMois" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /equipements:
+    get:
+      summary: "Inventaire filtrable et paginé"
+      tags: [equipements]
+      parameters:
+        - { name: etablissementId, in: query, required: false, schema: { type: string }, description: "etablissementId" }
+        - { name: typeId, in: query, required: false, schema: { type: string }, description: "typeId" }
+        - { name: statut, in: query, required: false, schema: { type: string }, description: "statut" }
+        - { name: etat, in: query, required: false, schema: { type: string }, description: "etat (ok|a_venir|en_retard|hors_service)" }
+        - { name: q, in: query, required: false, schema: { type: string }, description: "q" }
+        - { name: page, in: query, required: false, schema: { type: string }, description: "page" }
+        - { name: size, in: query, required: false, schema: { type: string }, description: "size" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /equipement:
+    get:
+      summary: "Équipement + historique des contrôles"
+      tags: [equipement]
+      parameters:
+        - { name: id, in: query, required: true, schema: { type: string }, description: "id" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /equipement/qr:
+    get:
+      summary: "Retrouve un équipement par son QR code"
+      tags: [equipement]
+      parameters:
+        - { name: code, in: query, required: true, schema: { type: string }, description: "code" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /equipement/save:
+    post:
+      summary: "Crée (QR généré) ou modifie (id) un équipement"
+      tags: [equipement]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, typeId, libelle, dateMiseEnService]
+              properties:
+                id: { description: "id" }
+                etablissementId: { description: "etablissementId" }
+                typeId: { description: "typeId" }
+                libelle: { description: "libelle" }
+                dateMiseEnService: { description: "dateMiseEnService" }
+                niveauId: { description: "niveauId" }
+                emplacement: { description: "emplacement" }
+                statut: { description: "statut" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /controle/add:
+    post:
+      summary: "Saisit un contrôle (crée la non-conformité si négatif, inscrit au registre)"
+      tags: [controle]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [equipementId, date, resultat, controleur]
+              properties:
+                equipementId: { description: "equipementId" }
+                date: { description: "date" }
+                resultat: { description: "resultat (conforme|non_conforme)" }
+                controleur: { description: "controleur" }
+                observations: { description: "observations (obligatoires si non conforme)" }
+                photo: { description: "photo {nom, mime, base64}" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /controles:
+    get:
+      summary: "Contrôles d'un établissement"
+      tags: [controles]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+        - { name: page, in: query, required: false, schema: { type: string }, description: "page" }
+        - { name: size, in: query, required: false, schema: { type: string }, description: "size" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /document:
+    get:
+      summary: "Photo jointe à un contrôle (base64)"
+      tags: [document]
+      parameters:
+        - { name: id, in: query, required: true, schema: { type: string }, description: "id" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /non-conformites:
+    get:
+      summary: "Liste des non-conformités"
+      tags: [non-conformites]
+      parameters:
+        - { name: etablissementId, in: query, required: false, schema: { type: string }, description: "etablissementId" }
+        - { name: statut, in: query, required: false, schema: { type: string }, description: "statut" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /non-conformite:
+    get:
+      summary: "Non-conformité + plan d'action"
+      tags: [non-conformite]
+      parameters:
+        - { name: id, in: query, required: true, schema: { type: string }, description: "id" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /action/add:
+    post:
+      summary: "Ajoute une action corrective"
+      tags: [action]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nonConformiteId, description, responsable, echeance]
+              properties:
+                nonConformiteId: { description: "nonConformiteId" }
+                description: { description: "description" }
+                responsable: { description: "responsable" }
+                echeance: { description: "echeance" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /action/update:
+    post:
+      summary: "Modifie une action (statut…)"
+      tags: [action]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { description: "id" }
+                statut: { description: "statut" }
+                description: { description: "description" }
+                responsable: { description: "responsable" }
+                echeance: { description: "echeance" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /non-conformite/lever:
+    post:
+      summary: "Lève la non-conformité (toutes les actions terminées)"
+      tags: [non-conformite]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { description: "id" }
+                note: { description: "note" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /registre:
+    get:
+      summary: "Registre (plus récent d'abord) + vérification d'intégrité"
+      tags: [registre]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+        - { name: type, in: query, required: false, schema: { type: string }, description: "type" }
+        - { name: page, in: query, required: false, schema: { type: string }, description: "page" }
+        - { name: size, in: query, required: false, schema: { type: string }, description: "size" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /registre/verify:
+    get:
+      summary: "Revérifie toute la chaîne de hachage"
+      tags: [registre]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /registre/pdf:
+    get:
+      summary: "Export PDF du registre (application/pdf)"
+      tags: [registre]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+        - { name: from, in: query, required: false, schema: { type: string }, description: "from" }
+        - { name: to, in: query, required: false, schema: { type: string }, description: "to" }
+      responses:
+        '200': { description: OK, content: { application/pdf: { schema: { type: string, format: binary } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /registre/intervention:
+    post:
+      summary: "Inscrit une intervention"
+      tags: [registre]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, date, intervenant, description]
+              properties:
+                etablissementId: { description: "etablissementId" }
+                date: { description: "date" }
+                intervenant: { description: "intervenant" }
+                description: { description: "description" }
+                equipementId: { description: "equipementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /registre/correction:
+    post:
+      summary: "Corrige une entrée par une NOUVELLE entrée liée"
+      tags: [registre]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [entryId, motif, correction]
+              properties:
+                entryId: { description: "entryId" }
+                motif: { description: "motif" }
+                correction: { description: "correction" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /exercices:
+    get:
+      summary: "Exercices et formations"
+      tags: [exercices]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /exercice/add:
+    post:
+      summary: "Inscrit un exercice/une formation"
+      tags: [exercice]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, type, date, participants, dureeMin]
+              properties:
+                etablissementId: { description: "etablissementId" }
+                type: { description: "type (evacuation|formation)" }
+                date: { description: "date" }
+                participants: { description: "participants" }
+                dureeMin: { description: "dureeMin" }
+                observations: { description: "observations" }
+                recyclageMois: { description: "recyclageMois" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /visites:
+    get:
+      summary: "Visites de la commission et prescriptions d'un établissement"
+      tags: [commission]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /visite/add:
+    post:
+      summary: "Enregistre une visite (avis, prescriptions) et l'inscrit au registre"
+      tags: [commission]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, date, avis]
+              properties:
+                etablissementId: { description: "etablissementId" }
+                date: { description: "date (AAAA-MM-JJ, pas dans le futur)" }
+                avis: { description: "favorable | defavorable" }
+                president: { description: "commission / président" }
+                observations: { description: "observations" }
+                prochaineVisite: { description: "date de la prochaine visite (après la visite)" }
+                prescriptions: { description: "[{ description, responsable, echeance }]" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /prescription/add:
+    post:
+      summary: "Ajoute une prescription à une visite (journalisé)"
+      tags: [commission]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [visiteId, description, responsable, echeance]
+              properties:
+                visiteId: { description: "visiteId" }
+                description: { description: "description" }
+                responsable: { description: "responsable" }
+                echeance: { description: "echeance" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /prescription/update:
+    post:
+      summary: "Met à jour une prescription (a_faire | en_cours | levee ; une prescription levée ne se rouvre pas)"
+      tags: [commission]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { description: "id" }
+                statut: { description: "a_faire | en_cours | levee" }
+                description: { description: "description" }
+                responsable: { description: "responsable" }
+                echeance: { description: "echeance" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /plans:
+    get:
+      summary: "Plans d'étage d'un établissement avec la position des équipements (x, y en %)"
+      tags: [plans]
+      parameters:
+        - { name: etablissementId, in: query, required: true, schema: { type: string }, description: "etablissementId" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /plan/save:
+    post:
+      summary: "Importe ou remplace le plan d'un niveau (image PNG/JPEG/WebP, 1,5 Mo max)"
+      tags: [plans]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etablissementId, niveauId, image]
+              properties:
+                etablissementId: { description: "etablissementId" }
+                niveauId: { description: "niveauId" }
+                nom: { description: "nom" }
+                image: { description: "{ nom, mime, base64 }" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /plan/position:
+    post:
+      summary: "Place, déplace ou retire (x = y = null) un équipement sur un plan"
+      tags: [plans]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [planId, equipementId, x, y]
+              properties:
+                planId: { description: "planId" }
+                equipementId: { description: "equipementId" }
+                x: { description: "0-100 (% de la largeur) ou null" }
+                y: { description: "0-100 (% de la hauteur) ou null" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /alertes/run:
+    post:
+      summary: "Envoie les alertes d'échéance (idempotent ; cron ; admin)"
+      tags: [alertes]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /users/add:
+    post:
+      summary: "Crée un utilisateur (admin)"
+      tags: [users]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, nom, role, password]
+              properties:
+                email: { description: "email" }
+                nom: { description: "nom" }
+                role: { description: "role (admin|exploitant|technicien|auditeur)" }
+                password: { description: "password" }
+                etablissementIds: { description: "etablissementIds[]" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits ou périmètre insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
