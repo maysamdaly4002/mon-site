@@ -1,7 +1,7 @@
 {
   "id": "local.lms",
   "name": "Formation en ligne (LMS)",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Learning Management System : cours (chapitres, leçons texte/vidéo/lien avec plusieurs médias : vidéos, images, documents, liens), séances en direct Google Meet, inscriptions, progression, quiz notés par le serveur et certificats PDF vérifiables avec QR code.",
   "author": {
     "name": "Candidat"

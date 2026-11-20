@@ -384,11 +384,13 @@ export class LmsService {
       .filter((c) => this.owns(a, c.apprenantId) || seesAll(a) || (courses.get(c.courseId) && canManageCourse(a, courses.get(c.courseId)!)))
       .map((c) => ({ id: c.id, code: c.code, apprenantNom: c.apprenantNom, coursTitre: c.coursTitre, delivreAt: c.delivreAt, integre: this.certOk(c) }));
   }
-  /** Vérification publique : renvoie seulement le nom, le cours et la date — jamais l'e-mail. */
+  /** Vérification publique : renvoie seulement le nom, le cours, la date et le nom de l'organisme (réglage public du module) — jamais l'e-mail. */
   async verifyCertificat(rawCode: unknown) {
     const code = this.parse(S.codeInput, rawCode);
     const c = (await this.repo.certificats.find({ code }))[0];
-    return c && this.certOk(c) ? { valide: true, apprenantNom: c.apprenantNom, coursTitre: c.coursTitre, delivreAt: c.delivreAt } : { valide: false };
+    if (!(c && this.certOk(c))) return { valide: false };
+    const organisation = this.opts.branding?.().organisation?.trim();
+    return { valide: true, apprenantNom: c.apprenantNom, coursTitre: c.coursTitre, delivreAt: c.delivreAt, ...(organisation ? { organisation } : {}) };
   }
   async certificatPdf(a: Actor, id: string) {
     authorize(a, 'read');

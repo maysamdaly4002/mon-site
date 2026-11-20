@@ -459,3 +459,16 @@ test('cours : un cours sans lien Meet (créé avant cette fonction) reste lisibl
   assert.equal((await lms.getCourse(amel, course.id)).course.meetUrl, '');
   assert.equal((await lms.getCourse(instr, course.id)).course.feedbackUrl, '');
 });
+
+test('vérification publique : le nom de l’organisme est renvoyé s’il est réglé, jamais l’e-mail', async () => {
+  const lms = await makeService({ branding: () => ({ organisation: '  Académie Snapify  ' }) });
+  const { course, lessons } = await build(lms);
+  const e = await lms.enroll(amel, { courseId: course.id });
+  await finishLessons(lms, amel, e.id, lessons);
+  const code = (await lms.listCertificats(amel))[0].code;
+  const v = await lms.verifyCertificat(code);
+  assert.equal(v.valide && v.organisation, 'Académie Snapify');
+  assert.equal(JSON.stringify(v).includes('@'), false);
+  const sans = await (await makeService({ branding: () => ({ organisation: '   ' }) })).verifyCertificat('CERT-AAAAAAAAAA');
+  assert.deepEqual(sans, { valide: false }); // code inconnu : aucun nom d'organisme n'est divulgué
+});

@@ -33,7 +33,7 @@ const msg = (e: unknown) => (e instanceof Error ? e.message : 'Une erreur est su
 
 function useLoad<T>(fn: () => Promise<T>, deps: unknown[]) {
   const [s, set] = useState<{ data?: T; error?: string; loading: boolean }>({ loading: true });
-  const load = () => { set((p) => ({ ...p, loading: true })); return fn().then((data) => set({ data, loading: false }), (e) => set({ error: msg(e), loading: false })); };
+  const load = () => { set((p) => ({ ...p, error: undefined, loading: true })); return fn().then((data) => set({ data, loading: false }), (e) => set({ error: msg(e), loading: false })); };
   useEffect(() => { let on = true; fn().then((data) => on && set({ data, loading: false }), (e) => on && set({ error: msg(e), loading: false })); return () => { on = false; }; }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   return { ...s, reload: load };
 }
@@ -99,17 +99,30 @@ function Shell({ p, me, title, children }: { p: Props; me: Me | undefined; title
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3 text-sm">
         <nav aria-label="Formation" className="flex flex-wrap gap-4">{link(BASE, 'Catalogue')}{link(`${BASE}certificats/`, 'Mes certificats')}{link(`${BASE}verifier/`, 'Vérifier un certificat')}</nav>
-        <div className="text-slate-600">{me?.customer ? <>Connecté : <strong>{me.customer.nom}</strong></> : me?.accountsAvailable ? <a className="font-medium text-slate-900 underline" href="/compte/">Se connecter / créer un compte</a> : null}</div>
+        <div className="text-slate-600">{me?.customer ? <>Connecté : <strong>{me.customer.nom}</strong></> : me?.accountsAvailable ? <a className="font-medium text-slate-900 underline" href="/compte/" onClick={() => rememberPage(p)}>Se connecter / créer un compte</a> : null}</div>
       </div>
       <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
       {children}
     </main>
   );
 }
+/** « Retour après connexion » : avant d'aller sur /compte/, on retient la page de formation en cours ; une fois connecté,
+ *  la première page de formation ouverte y ramène (une seule fois, et seulement vers /formation/…, jamais vers une autre adresse). */
+const RETURN_KEY = 'lms-retour';
+const rememberPage = (p: Props) => { try { sessionStorage.setItem(RETURN_KEY, `${p.path}${p.search ? (p.search.startsWith('?') ? p.search : `?${p.search}`) : ''}`); } catch { /* stockage indisponible : on ne retient rien */ } };
+const safeReturn = (v: string | null) => (v && /^\/formation\/[A-Za-z0-9_\-\/?=&.%]*$/.test(v) && !v.includes('//') ? v : null);
+function useReturnAfterLogin(p: Props, connected: boolean) {
+  useEffect(() => {
+    if (!connected) return;
+    let target: string | null = null;
+    try { target = safeReturn(sessionStorage.getItem(RETURN_KEY)); sessionStorage.removeItem(RETURN_KEY); } catch { /* ignoré */ }
+    if (target && target !== `${p.path}${p.search ?? ''}`) p.navigate(target);
+  }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
+}
 const useMe = (api: ModuleApi) => useLoad(() => api.get<Me>('/public/me'), [api]);
-const LoginPrompt = ({ me }: { me: Me | undefined }) => (
+const LoginPrompt = ({ me, p }: { me: Me | undefined; p: Props }) => (
   <div className={card}><p className="text-sm text-slate-700">{me?.accountsAvailable === false ? 'Les comptes apprenants ne sont pas activés sur ce site : contactez le formateur pour être inscrit.' : 'Connectez-vous ou créez un compte pour vous inscrire et suivre ce cours.'}</p>
-    {me?.accountsAvailable !== false ? <a className={`${btn} mt-3`} href="/compte/">Se connecter / créer un compte</a> : null}</div>
+    {me?.accountsAvailable !== false ? <a className={`${btn} mt-3`} href="/compte/" onClick={() => rememberPage(p)}>Se connecter / créer un compte</a> : null}</div>
 );
 
 // ───────────── Catalogue ─────────────
@@ -121,14 +134,14 @@ function Catalogue(p: Props) {
   return (
     <Shell p={p} me={me.data} title={p.settings.catalogTitle || 'Nos formations'}>
       {p.settings.catalogIntro ? <p className="text-slate-600">{p.settings.catalogIntro}</p> : null}
-      {list.error ? <Alert>{list.error}</Alert> : list.loading ? <p className="text-slate-500" aria-live="polite">Chargement…</p> : (<>
+      {list.error ? <><Alert>{list.error}</Alert><button type="button" className={btn2} onClick={() => void list.reload()}>Réessayer</button></> : list.loading ? <p className="text-slate-500" aria-live="polite">Chargement…</p> : (<>
         {mine.length > 0 && (<section aria-labelledby="mes"><h2 id="mes" className="mb-3 text-lg font-semibold text-slate-900">Mes formations</h2>
           <div className="grid gap-4 sm:grid-cols-2">{mine.map((c) => (
             <article key={c.id} className={`${card} space-y-2`}><div className="flex items-start justify-between gap-2"><h3 className="font-semibold text-slate-900">{c.titre}</h3>{c.inscription!.termine ? <Pill ok>Terminé</Pill> : <Pill>En cours</Pill>}</div>
               <Bar pct={c.inscription!.pourcent} /><p className="text-xs text-slate-500">{c.inscription!.faites} / {c.inscription!.total} leçons · {c.inscription!.pourcent} %</p>
               <button type="button" className={btn} onClick={() => go(c.id)}>{c.inscription!.termine ? 'Revoir le cours' : 'Continuer'}</button></article>))}</div></section>)}
         <section aria-labelledby="dispo"><h2 id="dispo" className="mb-3 text-lg font-semibold text-slate-900">{mine.length ? 'Autres formations' : 'Formations disponibles'}</h2>
-          {!open.length ? <p className="text-slate-500">Aucune formation publiée pour le moment.</p> : (
+          {!open.length ? <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-slate-500">{mine.length ? 'Vous suivez déjà toutes les formations proposées.' : 'Aucune formation n’est publiée pour le moment. Revenez bientôt !'}</p> : (
             <div className="grid gap-4 sm:grid-cols-2">{open.map((c) => (
               <article key={c.id} className={`${card} space-y-2`}><h3 className="font-semibold text-slate-900">{c.titre}</h3><p className="text-sm text-slate-600">{c.description}</p>
                 <p className="text-xs text-slate-500">{NIVEAU[c.niveau]} · {c.nbLecons} leçon(s) · {hhmm(c.dureeMin)} · {c.instructeurNom}</p>
@@ -152,7 +165,7 @@ function CoursePage({ p, id }: { p: Props; id: string }) {
   }, [sel, d.data]);
   useEffect(() => { if (d.data) p.setMeta({ title: d.data.course.titre, description: d.data.course.description }); }, [d.data]); // eslint-disable-line react-hooks/exhaustive-deps
   const act = async (fn: () => Promise<unknown>) => { setBusy(true); setErr(''); try { await fn(); await d.reload(); } catch (e) { setErr(msg(e)); } finally { setBusy(false); } };
-  if (d.error) return <Shell p={p} me={me.data} title="Cours introuvable"><Alert>{d.error}</Alert></Shell>;
+  if (d.error) return <Shell p={p} me={me.data} title="Cours introuvable"><Alert>{d.error}</Alert><p className="text-sm text-slate-600">Ce cours n’existe pas, n’est plus proposé ou n’est pas encore publié.</p><button type="button" className={btn2} onClick={() => p.navigate(BASE)}>Retour au catalogue</button></Shell>;
   if (!d.data) return <Shell p={p} me={me.data} title="Chargement…"><p className="text-slate-500" aria-live="polite">Chargement du cours…</p></Shell>;
   const { course, chapters, quiz, inscription: ins } = d.data;
   const all = chapters.flatMap((c) => c.lessons);
@@ -179,7 +192,7 @@ function CoursePage({ p, id }: { p: Props; id: string }) {
       {err ? <Alert>{err}</Alert> : null}
       {!ins ? (me.data?.customer ? (
         <div className={card}>{course.statut === 'publie' && me.data.openEnrollment ? <><p className="mb-3 text-sm text-slate-700">Inscrivez-vous pour accéder au contenu des leçons.</p><button type="button" className={btn} disabled={busy} onClick={() => void act(() => p.api.post('/public/inscription', { courseId: id }))}>S’inscrire à ce cours</button></> : <p className="text-sm text-slate-700">Les inscriptions à ce cours sont gérées par le formateur.</p>}</div>
-      ) : <LoginPrompt me={me.data} />) : (
+      ) : <LoginPrompt me={me.data} p={p} />) : (
         <div className={`${card} space-y-2`}><Bar pct={ins.pourcent} /><p className="text-sm text-slate-600">{ins.faites} / {ins.total} leçons · {ins.pourcent} %{ins.termine ? ' · cours terminé 🎉' : ''}</p>
           {ins.certificatId ? <button type="button" className={btn} onClick={() => void cert()}>Télécharger mon certificat (PDF)</button> : null}</div>)}
       {ins && (course.meetUrl || course.meetHoraire) ? (
@@ -228,7 +241,7 @@ function Certificats(p: Props) {
   return (
     <Shell p={p} me={me.data} title="Mes certificats">
       {err ? <Alert>{err}</Alert> : null}
-      {me.data && !me.data.customer ? <LoginPrompt me={me.data} /> : list.error ? <Alert>{list.error}</Alert> : !list.data ? <p className="text-slate-500">Chargement…</p> : !list.data.length ? <p className="text-slate-500">Terminez un cours pour obtenir votre certificat.</p> : (
+      {me.data && !me.data.customer ? <LoginPrompt me={me.data} p={p} /> : list.error ? <Alert>{list.error}</Alert> : !list.data ? <p className="text-slate-500">Chargement…</p> : !list.data.length ? <p className="text-slate-500">Terminez un cours pour obtenir votre certificat.</p> : (
         <ul className="space-y-3">{list.data.map((c) => (
           <li key={c.id} className={`${card} flex flex-wrap items-center justify-between gap-3`}><div><p className="font-semibold text-slate-900">{c.coursTitre}</p><p className="text-sm text-slate-600">Délivré le {day(c.delivreAt)} · code <code className="text-xs">{c.code}</code></p></div>
             <button type="button" className={btn} disabled={!c.integre} onClick={() => void dl(c.id)}>Télécharger (PDF)</button></li>))}</ul>)}
@@ -237,19 +250,46 @@ function Certificats(p: Props) {
 }
 
 // ───────────── Vérification publique ─────────────
+const CODE_RE = /^CERT-[A-Z0-9]{10}$/;
+interface Verdict { valide: boolean; apprenantNom?: string; coursTitre?: string; delivreAt?: string; organisation?: string }
 function Verifier(p: Props) {
   const me = useMe(p.api);
-  const [code, setCode] = useState(new URLSearchParams(p.search).get('code') ?? '');
-  const [res, setRes] = useState<{ valide: boolean; apprenantNom?: string; coursTitre?: string; delivreAt?: string } | null>(null); const [err, setErr] = useState('');
-  useEffect(() => { p.setMeta({ title: 'Vérifier un certificat', description: 'Contrôlez l’authenticité d’un certificat à partir de son code.' }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const check = async () => { setErr(''); setRes(null); try { setRes(await p.api.get(`/public/certificat/verifier?code=${encodeURIComponent(code.trim())}`)); } catch (e) { setErr(msg(e)); } };
+  const fromUrl = (new URLSearchParams(p.search).get('code') ?? '').trim().toUpperCase();
+  const [code, setCode] = useState(fromUrl);
+  const [res, setRes] = useState<{ code: string; v: Verdict } | null>(null); const [err, setErr] = useState(''); const [busy, setBusy] = useState(false);
+  useEffect(() => { p.setMeta({ title: 'Vérifier un certificat', description: 'Contrôlez l’authenticité d’un certificat à partir de son code ou de son QR code.' }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const check = async (raw: string) => {
+    const c = raw.trim().toUpperCase();
+    setErr(''); setRes(null);
+    if (!CODE_RE.test(c)) { setErr('Ce code n’a pas le bon format : « CERT- » suivi de 10 lettres ou chiffres.'); return; }
+    setBusy(true);
+    try { setRes({ code: c, v: await p.api.get<Verdict>(`/public/certificat/verifier?code=${encodeURIComponent(c)}`) }); } catch (e) { setErr(msg(e)); } finally { setBusy(false); }
+  };
+  // Arrivée par le QR code du certificat (?code=…) : la vérification se fait toute seule, sans rien saisir.
+  useEffect(() => { if (fromUrl) { setCode(fromUrl); void check(fromUrl); } }, [fromUrl]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <Shell p={p} me={me.data} title="Vérifier un certificat">
       <div className={`${card} space-y-3`}>
         <label className="block text-sm font-medium text-slate-700" htmlFor="code">Code du certificat</label>
-        <div className="flex flex-wrap gap-2"><input id="code" className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="CERT-XXXXXXXXXX" value={code} onChange={(e) => setCode(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && code.trim().length >= 5) void check(); }} /><button type="button" className={btn} disabled={code.trim().length < 5} onClick={() => void check()}>Vérifier</button></div>
-        {err ? <Alert>{err}</Alert> : null}
-        {res && (res.valide ? <p role="status" className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">✓ Certificat authentique : <strong>{res.apprenantNom}</strong> a terminé « {res.coursTitre} » le {res.delivreAt ? day(res.delivreAt) : ''}.</p> : <p role="status" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">✗ Code inconnu, ou certificat altéré.</p>)}
+        <div className="flex flex-wrap gap-2"><input id="code" className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="CERT-XXXXXXXXXX" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && code.trim().length >= 5 && !busy) void check(code); }} /><button type="button" className={btn} disabled={code.trim().length < 5 || busy} onClick={() => void check(code)}>{busy ? 'Vérification…' : 'Vérifier'}</button></div>
+        <p className="text-xs text-slate-500">Le code figure en bas à droite du certificat, sous le QR code.</p>
+        <div aria-live="polite" className="space-y-3">
+          {busy ? <p className="text-sm text-slate-500">Vérification en cours…</p> : null}
+          {err ? <Alert>{err}</Alert> : null}
+          {res && (res.v.valide ? (
+            <div role="status" className="space-y-1 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+              <p className="text-base font-semibold">✓ Certificat authentique</p>
+              <p className="text-sm"><strong>{res.v.apprenantNom}</strong> a terminé avec succès la formation « {res.v.coursTitre} »{res.v.delivreAt ? <> le {day(res.v.delivreAt)}</> : null}.</p>
+              {res.v.organisation ? <p className="text-sm">Délivré par <strong>{res.v.organisation}</strong>.</p> : null}
+              <p className="text-xs text-emerald-800">Code : {res.code}</p>
+            </div>
+          ) : (
+            <div role="status" className="space-y-1 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900">
+              <p className="text-base font-semibold">✗ Certificat non reconnu</p>
+              <p className="text-sm">Ce code est inconnu, ou le certificat a été modifié. Vérifiez que vous l’avez recopié sans erreur, ou contactez l’organisme de formation.</p>
+            </div>
+          ))}
+        </div>
       </div>
     </Shell>
   );
@@ -262,6 +302,8 @@ function LmsPage(props: Props) {
   useEffect(() => { window.scrollTo?.({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' }); }, [props.path]);
   // Sans module « Espace client » : message de repli dans les écrans qui exigent un compte (voir LoginPrompt).
   void isModuleActive;
+  const who = useMe(props.api);
+  useReturnAfterLogin(props, !!who.data?.customer);
   if (sub === 'cours' && segs[2]) return <CoursePage key={segs[2]} p={props} id={decodeURIComponent(segs[2])} />;
   if (sub === 'certificats') return <Certificats {...props} />;
   if (sub === 'verifier') return <Verifier {...props} />;

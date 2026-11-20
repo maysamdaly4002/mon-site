@@ -1,6 +1,6 @@
 {
   "name": "snapify-lms",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "description": "Module LMS (Learning Management System) pour Snapify : cours, leçons, inscriptions, progression, quiz et certificats vérifiables.",
