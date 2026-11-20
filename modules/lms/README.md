@@ -40,7 +40,7 @@ Même présentation que le module CRM : en-tête de page avec actions, **barre d
 
 ## Certificat PDF
 
-Format A4 paysage, généré sans dépendance (`core/pdf.ts`) : titre, nom de l'apprenant et du cours (ajustés et tronqués proprement s'ils sont très longs), date en français, sceau, **code de vérification**, **empreinte SHA-256** complète et, si l'adresse du site est connue, un **lien de vérification cliquable** (`…/formation/verifier/?code=CERT-…`).
+Format A4 paysage, généré sans dépendance (`core/pdf.ts`) : titre, nom de l'apprenant et du cours (ajustés et tronqués proprement s'ils sont très longs), date en français, sceau, **code de vérification**, **empreinte SHA-256** complète et, si l'adresse du site est connue, un **lien de vérification cliquable** (`…/formation/verifier/?code=CERT-…`) et un **QR code** qui ouvre la même page (≈ 2,5 cm, noir sur blanc, légende « Scannez pour vérifier »). Le QR code est généré sans dépendance (`core/qr.ts`, norme ISO 18004, correction d'erreurs M) ; il n'est dessiné que si l'adresse commence par `https://` et tient dans un QR code (213 octets), sinon le certificat reste valable, sans QR. Le QR code est vérifié en lisant le PDF rendu avec un vrai décodeur.
 Réglages (Administration → Modules → Formation → *Certificat*) : nom de l'organisme, nom du signataire, adresse du site (`https://…`). En API autonome : variables `LMS_ORGANISATION`, `LMS_SIGNATORY`, `LMS_VERIFY_URL`. Les réglages sont relus à chaque téléchargement ; les certificats déjà délivrés prennent donc le nouvel habillage sans être modifiés en base (le hash ne couvre pas l'habillage).
 Un lien n'est imprimé que si l'adresse commence par `https://`.
 
@@ -75,6 +75,26 @@ Une leçon a un **contenu principal** (texte, vidéo ou lien, comme avant) et un
 - **Accès** : comme le texte des leçons, les médias ne sont envoyés qu'aux inscrits, aux gestionnaires du cours et aux auditeurs. Un visiteur voit seulement le **nombre** de médias de chaque leçon (`nbMedias`), jamais leurs adresses.
 - **Sécurité** : chaque adresse doit commencer par `https://` (aucun `http:`, `javascript:`, `data:`…), vérifiée par zod **et** par la base (contrainte SQL `lessons_medias_valid`) ; titres débarrassés de tout HTML ; une seule leçon reste à terminer, quel que soit le nombre de médias.
 - **Mise à jour depuis la 1.0.0** : lancez `npm run db:migrate` (migration `002_lesson_medias.sql` : colonne `medias`, `'[]'` pour les leçons existantes). Dans Snapify (collections JSON), rien à migrer : une leçon sans champ `medias` est lue comme n'en ayant aucun. Réinstallez ensuite le paquet du module (version 1.1.0).
+
+## Séances en direct (Google Meet) et avis des apprenants
+
+Chaque cours peut avoir, en plus des leçons, **trois champs facultatifs** (Cours → ouvrir un cours → carte d'informations) :
+
+| Champ | Contenu | Qui le voit |
+|---|---|---|
+| `meetUrl` | salle Google Meet, `https://meet.google.com/abc-defg-hij` | inscrits et gestionnaires du cours, auditeurs |
+| `meetHoraire` | jours et heure en texte libre (« Chaque mardi, 18 h (heure de Tunis) ») | tout le monde, y compris le catalogue |
+| `feedbackUrl` | formulaire d'avis (Google Forms, etc.), adresse `https://` | inscrits et gestionnaires ; le bouton « Donner mon avis » apparaît une fois le cours **terminé** |
+
+- **Page du cours** : un encadré « Séances en direct » avec l'horaire et le bouton « Rejoindre la séance (Google Meet) » (nouvel onglet, `noopener noreferrer`). Un visiteur non inscrit ne voit que l'horaire.
+- **Sécurité** : seules les adresses `https://meet.google.com/…` sont acceptées pour la salle (zod **et** contrainte SQL `courses_meet_url_valid`) : `http:`, `javascript:`, `meet.google.com.autre-site.tn`, Zoom, etc. sont refusés. Le lien d'une salle et celui du formulaire ne sont jamais envoyés à un visiteur non inscrit (`liveFields` dans `core/services.ts`), comme le contenu des leçons.
+- **API** : `POST /cours/save` accepte `meetUrl`, `meetHoraire`, `feedbackUrl` ; omis à la modification, ils sont conservés ; une chaîne vide les retire. Voir `docs/openapi.yaml`.
+- **Mise à jour** : lancez `npm run db:migrate` (migration `003_course_live.sql` : trois colonnes `''` par défaut). Dans Snapify (collections JSON), rien à migrer : un cours sans ces champs est lu comme n'en ayant aucun. Réinstallez ensuite le paquet du module (version 1.2.0).
+- **Conseils** : créez la salle dans Google Agenda (événement récurrent avec « Ajouter une visioconférence Google Meet ») pour qu'elle reste la même à chaque séance, et réglez-la sur « accès sur invitation / approbation de l'organisateur » pour éviter les intrusions. Le texte d'horaire doit toujours préciser le **fuseau horaire**.
+
+## Améliorer un cours
+
+Un plan en 5 étapes (avis → analyse → améliorations → test → répétition) et un **modèle de module** (Word) se trouvent dans `docs/` : `plan-amelioration-cours.md` et `modele-de-module.docx`. Le formulaire d'avis (`feedbackUrl`) et le tableau de bord (taux d'achèvement, score moyen, inactifs) fournissent les chiffres de départ.
 
 ## Confort de lecture (défilement)
 
@@ -139,6 +159,6 @@ Dans Docker : `docker compose --profile api run --rm -e ADMIN_EMAIL=… -e ADMIN
 - Dans Snapify, les collections JSON n'ont ni transactions ni contrainte `UNIQUE` : toutes les écritures sont sérialisées par `ctx.lock`, mais la « fin de cours + certificat » n'est pas atomique comme sur PostgreSQL.
 - Les pages publiques dépendent du module « Espace client » pour la connexion ; l'identité qu'il renvoie (`id`, `firstName`, `lastName`, `email`) est lue de façon défensive dans `src/server.ts` — c'est le point à vérifier sur votre site. Après connexion, l'Espace client ne ramène pas forcément à la formation : l'apprenant revient via le menu.
 - Un apprenant sans compte ne peut pas passer le quiz lui-même : le formateur saisit ses réponses papier (route d'administration `/quiz/soumettre`, sans interface dédiée).
-- Pas de paiement, forum, e-mails de rappel, import SCORM, ni interface en arabe. Pas de dépôt de fichiers : les vidéos, images et documents sont des **liens** vers un hébergement externe (YouTube, Vimeo, un espace de stockage en ligne…). Une image s'affiche depuis son site d'origine : si celui-ci bloque l'affichage externe, le lien « Ouvrir l'image en grand » reste disponible. Un lien de partage qui n'est pas un accès direct (page d'aperçu d'un service de stockage, par exemple) s'ouvre dans un nouvel onglet mais ne s'affiche pas dans la page.
+- Pas de paiement, forum, e-mails de rappel (ni rappels automatiques avant les séances Meet : le module affiche le lien, il ne crée pas la salle ni n'invite les apprenants), import SCORM, ni interface en arabe. Pas de dépôt de fichiers : les vidéos, images et documents sont des **liens** vers un hébergement externe (YouTube, Vimeo, un espace de stockage en ligne…). Une image s'affiche depuis son site d'origine : si celui-ci bloque l'affichage externe, le lien « Ouvrir l'image en grand » reste disponible. Un lien de partage qui n'est pas un accès direct (page d'aperçu d'un service de stockage, par exemple) s'ouvre dans un nouvel onglet mais ne s'affiche pas dans la page.
 - Les leçons ajoutées après la fin d'un cours ne réouvrent pas les inscriptions déjà terminées (le certificat reste valable).
 - Les interfaces (5 pages d'administration, 4 pages publiques) ont été rendues dans jsdom avec des composants et des API simulés (parcours complet, visiteur anonyme et connecté), pas dans un navigateur ni sur un vrai site Snapify.

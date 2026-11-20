@@ -15,7 +15,14 @@ const email = z.preprocess((v) => (typeof v === 'string' ? v.trim().toLowerCase(
 const int = (min: number, max: number, label: string) => z.coerce.number({ invalid_type_error: `${label} : nombre requis` }).int(`${label} : entier requis`).min(min, `${label} : minimum ${min}`).max(max, `${label} : maximum ${max}`);
 
 // ───────── Cours, chapitres, leçons ─────────
-export const courseInput = z.object({ titre: req(120, 'Titre'), description: text(2000).default(''), niveau: z.enum(NIVEAUX).default('debutant') });
+/** Salle Google Meet : https://meet.google.com/abc-defg-hij (ou un lien « lookup »), jamais une autre adresse. Vide = pas de séance en direct. */
+export const meetUrlInput = z.string().trim().regex(/^(|https:\/\/meet\.google\.com\/[A-Za-z0-9_\/-]{3,80}(\?[^\s<>"'`]{0,200})?)$/, 'Lien Google Meet attendu (https://meet.google.com/…)');
+/** Formulaire d'avis (Google Forms, etc.) : adresse https:// ou vide. */
+export const feedbackUrlInput = z.string().trim().regex(/^(|https:\/\/[^\s<>"'`]{4,480})$/, 'Adresse https:// valide requise pour le formulaire d’avis');
+export const courseInput = z.object({
+  titre: req(120, 'Titre'), description: text(2000).default(''), niveau: z.enum(NIVEAUX).default('debutant'),
+  meetUrl: meetUrlInput.default(''), meetHoraire: text(200).default(''), feedbackUrl: feedbackUrlInput.default(''),
+});
 export const coursePatch = courseInput.partial();
 export const statutInput = z.object({ statut: z.enum(COURSE_STATUTS) });
 export const chapterInput = z.object({ courseId: id, titre: req(120, 'Titre') });

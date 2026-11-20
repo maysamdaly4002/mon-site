@@ -13,7 +13,7 @@ import { definePublicModule, isModuleActive, type ModuleApi, type PublicPageProp
 type Settings = { catalogTitle?: string; catalogIntro?: string; openEnrollment?: boolean };
 type Props = PublicPageProps<Settings>;
 interface Resume { enrollmentId: string; faites: number; total: number; pourcent: number; leconsFaites: string[]; quiz: { requis: boolean; reussi: boolean; tentatives: number; meilleurScore: number | null; restantes: number | null; seuil: number | null }; termine: boolean; certificatId: string | null }
-interface Course { id: string; titre: string; description: string; niveau: string; statut: string; instructeurNom: string; nbLecons: number; dureeMin: number; inscription: Resume | null }
+interface Course { id: string; titre: string; description: string; niveau: string; statut: string; instructeurNom: string; nbLecons: number; dureeMin: number; inscription: Resume | null; meetUrl?: string; meetHoraire?: string; feedbackUrl?: string }
 type MediaType = 'video' | 'image' | 'document' | 'lien';
 interface Media { type: MediaType; titre: string; url: string }
 interface Lecon { id: string; titre: string; type: 'texte' | 'video' | 'lien'; contenu: string; medias?: Media[]; nbMedias?: number; dureeMin: number }
@@ -182,6 +182,11 @@ function CoursePage({ p, id }: { p: Props; id: string }) {
       ) : <LoginPrompt me={me.data} />) : (
         <div className={`${card} space-y-2`}><Bar pct={ins.pourcent} /><p className="text-sm text-slate-600">{ins.faites} / {ins.total} leçons · {ins.pourcent} %{ins.termine ? ' · cours terminé 🎉' : ''}</p>
           {ins.certificatId ? <button type="button" className={btn} onClick={() => void cert()}>Télécharger mon certificat (PDF)</button> : null}</div>)}
+      {ins && (course.meetUrl || course.meetHoraire) ? (
+        <div className={`${card} space-y-2`}><p className="text-sm font-semibold text-slate-900">Séances en direct</p>
+          {course.meetHoraire ? <p className="text-sm text-slate-600">🗓 {course.meetHoraire}</p> : null}
+          {course.meetUrl ? <a className={btn} href={course.meetUrl} target="_blank" rel="noopener noreferrer">Rejoindre la séance (Google Meet)</a> : null}</div>) : !ins && course.meetHoraire ? <p className="text-sm text-slate-600">🗓 Séances en direct : {course.meetHoraire}</p> : null}
+      {ins && ins.termine && course.feedbackUrl ? <div className={`${card} space-y-2`}><p className="text-sm text-slate-700">Votre avis nous aide à améliorer ce cours (2 minutes).</p><a className={btn} href={course.feedbackUrl} target="_blank" rel="noopener noreferrer">Donner mon avis</a></div> : null}
       <div className="grid gap-4 lg:grid-cols-[17rem_1fr]">
         <nav ref={navRef} aria-label="Programme du cours" className={`${card} relative max-h-72 space-y-3 overflow-y-auto overscroll-contain lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:self-start`}>{chapters.map((ch) => (
           <div key={ch.id}><p className="mb-1 text-sm font-semibold text-slate-900">{ch.titre}</p>

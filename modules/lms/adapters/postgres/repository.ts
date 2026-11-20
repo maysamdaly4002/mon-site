@@ -63,7 +63,7 @@ function build(q: Q, pool: pg.Pool | null): LmsRepository {
   const t = <E extends { id: string; createdAt: string }>(name: string, keys: string) => table<E>(q, name, keys);
   const repo: LmsRepository = {
     users: t('users', 'email nom role passwordHash'),
-    courses: t('courses', 'titre description niveau statut instructeurId instructeurNom'),
+    courses: t('courses', 'titre description niveau statut instructeurId instructeurNom meetUrl meetHoraire feedbackUrl'),
     chapters: t('chapters', 'courseId titre position archive'),
     lessons: t('lessons', 'courseId chapterId titre type contenu medias dureeMin position archive'),
     quizzes: t('quizzes', 'courseId titre seuil tentativesMax'),

@@ -71,6 +71,9 @@ paths:
                 titre: { description: "" }
                 description: { description: "" }
                 niveau: { description: "debutant | intermediaire | avance" }
+                meetUrl: { description: "Salle Google Meet des séances en direct (https://meet.google.com/…), vide = aucune. Visible des inscrits et des gestionnaires seulement." }
+                meetHoraire: { description: "Jours et heure des séances, texte libre (200 caractères max). Visible de tous." }
+                feedbackUrl: { description: "Formulaire d'avis (adresse https://), vide = aucun. Visible des inscrits et des gestionnaires seulement." }
       responses:
         '200': { description: OK, content: { application/json: { schema: { type: object } } } }
         '400': { description: Validation }

@@ -1,3 +1,5 @@
+import { qrMatrix, QR_MAX_BYTES } from './qr';
+
 /** Mini générateur PDF (texte seul, A4, polices standard) : zéro dépendance, suffisant pour exporter le registre. */
 const WIN: Record<string, number> = { '€': 0x80, '…': 0x85, '‘': 0x91, '’': 0x92, '“': 0x93, '”': 0x94, '•': 0x95, '–': 0x96, '—': 0x97, 'œ': 0x9c, 'Œ': 0x8c };
 function enc(s: string): Buffer {
@@ -99,6 +101,7 @@ function wrapWidth(t: string, face: Face, size: number, maxW: number, maxLines: 
   }
   return lines;
 }
+const SAFE_URL = /^https:\/\/[\x21-\x7e]+$/;
 export interface CertificateData { nom: string; cours: string; date: string; code: string; hash: string; organisation?: string; signataire?: string; verifyUrl?: string }
 
 export function certificatePdf(c: CertificateData): Buffer {
@@ -157,6 +160,19 @@ export function certificatePdf(c: CertificateData): Buffer {
     right(c.verifyUrl, base - 14, 'F1', size, '0.10 0.30 0.65');
     link = { x: rx - w, y: base - 17, w, h: size + 4, url: c.verifyUrl };
   } else right('Vérification : page « Vérifier un certificat » du site', base - 14, 'F1', 8, GREY);
+  // QR code de vérification (même adresse que le lien) : 72 pt ≈ 2,5 cm, noir sur fond blanc, aligné à droite au-dessus du code.
+  if (c.verifyUrl && SAFE_URL.test(c.verifyUrl) && new TextEncoder().encode(c.verifyUrl).length <= QR_MAX_BYTES) {
+    const m = qrMatrix(c.verifyUrl), n = m.length, QS = 72, mod = QS / n, qx = rx - QS, qy = base + 40;
+    raw(`1 1 1 rg ${(qx - 2 * mod).toFixed(2)} ${(qy - 2 * mod).toFixed(2)} ${(QS + 4 * mod).toFixed(2)} ${(QS + 4 * mod).toFixed(2)} re f`); // marge blanche
+    raw('0 0 0 rg');
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!m[y][x]) continue;
+      let w = 1; while (x + w < n && m[y][x + w]) w++; // une seule barre par suite de modules sombres
+      raw(`${(qx + x * mod).toFixed(2)} ${(qy + (n - 1 - y) * mod).toFixed(2)} ${(w * mod + 0.02).toFixed(2)} ${(mod + 0.02).toFixed(2)} re f`);
+      x += w - 1;
+    }
+    right('Scannez pour vérifier', base + 28, 'F1', 6.5, GREY);
+  }
   centered(`Empreinte SHA-256 : ${c.hash}`, 46, 'F1', 6.5, GREY);
 
   const stream = Buffer.concat(ops);
@@ -169,7 +185,7 @@ export function certificatePdf(c: CertificateData): Buffer {
     B(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R${link ? ' /Annots [8 0 R]' : ''} >>`),
     Buffer.concat([B(`<< /Length ${stream.length} >>\nstream\n`), stream, B('endstream')]),
   ];
-  if (link && /^https:\/\/[\x21-\x7e]+$/.test(link.url)) objs.push(B(`<< /Type /Annot /Subtype /Link /Rect [${link.x.toFixed(1)} ${link.y.toFixed(1)} ${(link.x + link.w).toFixed(1)} ${(link.y + link.h).toFixed(1)}] /Border [0 0 0] /A << /S /URI /URI (${link.url.replace(/[()\\]/g, '\\$&')}) >> >>`));
+  if (link && SAFE_URL.test(link.url)) objs.push(B(`<< /Type /Annot /Subtype /Link /Rect [${link.x.toFixed(1)} ${link.y.toFixed(1)} ${(link.x + link.w).toFixed(1)} ${(link.y + link.h).toFixed(1)}] /Border [0 0 0] /A << /S /URI /URI (${link.url.replace(/[()\\]/g, '\\$&')}) >> >>`));
   else if (link) objs[5] = B(objs[5].toString('latin1').replace(' /Annots [8 0 R]', ''));
   return assemble(objs);
 }

@@ -25,7 +25,9 @@ export interface Actor {
 }
 
 export interface User extends Dated { id: string; email: string; nom: string; role: Role; passwordHash: string }
-export interface Course extends Dated { id: string; titre: string; description: string; niveau: Niveau; statut: CourseStatut; instructeurId: string; instructeurNom: string }
+/** `meetUrl` = salle Google Meet des séances en direct, `meetHoraire` = jours et heure en texte libre, `feedbackUrl` = formulaire d'avis : tous facultatifs
+ *  (absents sur les cours créés avant cette fonction : lus comme `''`). `meetUrl` et `feedbackUrl` ne sont donnés qu'aux inscrits et aux gestionnaires. */
+export interface Course extends Dated { id: string; titre: string; description: string; niveau: Niveau; statut: CourseStatut; instructeurId: string; instructeurNom: string; meetUrl?: string; meetHoraire?: string; feedbackUrl?: string }
 /** Rien n'est supprimé : retirer un chapitre, une leçon ou une question = `archive: true` (l'historique de progression reste lisible). */
 export interface Chapter extends Dated { id: string; courseId: string; titre: string; position: number; archive: boolean }
 /** `contenu` = contenu principal (texte, ou adresse de la vidéo / du lien) ; `medias` = médias complémentaires affichés à la suite (absent sur les leçons créées avant cette fonction : lu comme `[]`). */

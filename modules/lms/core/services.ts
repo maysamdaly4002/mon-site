@@ -72,6 +72,8 @@ export class LmsService {
     return c.statut === 'archive' && (await this.mine(a, c.id)).length > 0;
   }
   private async assertVisible(a: Actor, c: Course) { if (!(await this.visible(a, c))) throw notFound('Cours'); }
+  /** La salle Meet et le formulaire d'avis ne sont donnés qu'aux inscrits et aux gestionnaires (comme le contenu des leçons) ; l'horaire reste public. */
+  private liveFields(c: Course, show: boolean): Course { return { ...c, meetUrl: show ? (c.meetUrl ?? '') : '', meetHoraire: c.meetHoraire ?? '', feedbackUrl: show ? (c.feedbackUrl ?? '') : '' }; }
 
   // ───────── Contenu : structure ─────────
   private async chapters(courseId: string): Promise<Chapter[]> { return (await this.repo.chapters.find({ courseId })).filter((c) => !c.archive).sort(byPos); }
@@ -112,7 +114,7 @@ export class LmsService {
       if (!(seesAll(a) || canManageCourse(a, c) || c.statut === 'publie' || (c.statut === 'archive' && mine.has(c.id)))) continue;
       const lessons = await this.lessons(c.id);
       const manage = seesAll(a) || canManageCourse(a, c);
-      out.push({ ...c, nbLecons: lessons.length, dureeMin: lessons.reduce((s, l) => s + l.dureeMin, 0), inscription: own.has(c.id) ? await this.summary(own.get(c.id)!) : null, peutGerer: canManageCourse(a, c), inscrits: manage ? (await this.repo.enrollments.find({ courseId: c.id })).length : null });
+      out.push({ ...this.liveFields(c, manage || own.has(c.id)), nbLecons: lessons.length, dureeMin: lessons.reduce((s, l) => s + l.dureeMin, 0), inscription: own.has(c.id) ? await this.summary(own.get(c.id)!) : null, peutGerer: canManageCourse(a, c), inscrits: manage ? (await this.repo.enrollments.find({ courseId: c.id })).length : null });
     }
     return out.sort((x, y) => x.titre.localeCompare(y.titre));
   }
@@ -126,7 +128,7 @@ export class LmsService {
     const showContent = manage || seesAll(a) || !!mine;
     const [chapters, lessons, quiz] = [await this.chapters(id), await this.lessons(id), (await this.repo.quizzes.find({ courseId: id }))[0] ?? null];
     return {
-      course: c, peutGerer: manage,
+      course: this.liveFields(c, showContent), peutGerer: manage,
       chapters: chapters.map((ch) => ({ ...ch, lessons: lessons.filter((l) => l.chapterId === ch.id).map((l) => ({ ...l, contenu: showContent ? l.contenu : '', medias: showContent ? (l.medias ?? []) : [], nbMedias: (l.medias ?? []).length })) })),
       quiz: quiz ? { ...quiz, questions: (await this.activeQuestions(quiz)).map((q) => ({ id: q.id, enonce: q.enonce, choix: q.choix, position: q.position, multiple: q.bonnes.length > 1, ...(manage || seesAll(a) ? { bonnes: q.bonnes } : {}) })) } : null,
       inscription: mine ? await this.summary(mine) : null,

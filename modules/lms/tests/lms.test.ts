@@ -429,3 +429,33 @@ test('médias : une leçon créée avant cette fonction (sans champ medias) rest
   assert.equal(m.dureeMin, 12);
   assert.equal((await lms.updateLesson(instr, lessons[0].id, { medias: [MEDIAS[1]] })).medias.length, 1);
 });
+
+test('cours : lien Google Meet, horaire et formulaire d’avis — validés, et réservés aux inscrits', async () => {
+  const lms = await makeService();
+  const { course } = await build(lms);
+  const MEET = 'https://meet.google.com/abc-defg-hij';
+  // Validation : seules les salles Google Meet et les adresses https:// passent.
+  for (const meetUrl of ['http://meet.google.com/abc-defg-hij', 'https://zoom.us/j/123456', 'https://meet.google.com.evil.tn/abc', 'javascript:alert(1)'])
+    await rejects(lms.updateCourse(instr, course.id, { meetUrl }), 'validation');
+  await rejects(lms.updateCourse(instr, course.id, { feedbackUrl: 'http://forms.gle/abc' }), 'validation');
+  await rejects(lms.updateCourse(autre, course.id, { meetUrl: MEET }), 'forbidden'); // un autre formateur ne peut pas y toucher
+  const u = await lms.updateCourse(instr, course.id, { meetUrl: MEET, meetHoraire: '<b>Chaque mardi</b>, 18 h', feedbackUrl: 'https://forms.gle/abc123' });
+  assert.equal(u.meetUrl, MEET); assert.equal(u.meetHoraire, 'Chaque mardi, 18 h'); assert.equal(u.feedbackUrl, 'https://forms.gle/abc123');
+  assert.equal((await lms.updateCourse(instr, course.id, { titre: 'Nouveau titre' })).meetUrl, MEET); // une modification partielle ne l'efface pas
+  // Visibilité : un visiteur voit l'horaire mais ni la salle ni le formulaire ; un inscrit et le formateur voient tout.
+  const vue = async (a: typeof amel) => { const d = await lms.getCourse(a, course.id); const l = (await lms.listCourses(a)).find((c) => c.id === course.id)!; return [d.course, l]; };
+  for (const c of await vue(amel)) { assert.equal(c.meetUrl, ''); assert.equal(c.feedbackUrl, ''); assert.equal(c.meetHoraire, 'Chaque mardi, 18 h'); }
+  await lms.enroll(amel, { courseId: course.id });
+  for (const c of await vue(amel)) { assert.equal(c.meetUrl, MEET); assert.equal(c.feedbackUrl, 'https://forms.gle/abc123'); }
+  for (const c of await vue(instr)) assert.equal(c.meetUrl, MEET);
+  for (const c of await vue(sami)) assert.equal(c.meetUrl, ''); // Sami n'est pas inscrit
+  // Vider le champ retire la séance en direct.
+  assert.equal((await lms.updateCourse(instr, course.id, { meetUrl: '', meetHoraire: '' })).meetUrl, '');
+});
+
+test('cours : un cours sans lien Meet (créé avant cette fonction) reste lisible', async () => {
+  const lms = await makeService();
+  const { course } = await build(lms);
+  assert.equal((await lms.getCourse(amel, course.id)).course.meetUrl, '');
+  assert.equal((await lms.getCourse(instr, course.id)).course.feedbackUrl, '');
+});

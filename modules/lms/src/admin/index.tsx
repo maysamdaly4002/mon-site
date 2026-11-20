@@ -29,7 +29,7 @@ interface Lecon { id: string; titre: string; type: 'texte' | 'video' | 'lien'; c
 interface Chap { id: string; titre: string; lessons: Lecon[] }
 interface Question { id: string; enonce: string; choix: string[]; multiple: boolean; bonnes?: number[] }
 interface Quiz { id: string; titre: string; seuil: number; tentativesMax: number; questions: Question[] }
-interface Detail { course: { id: string; titre: string; description: string; niveau: string; statut: string; instructeurNom: string }; peutGerer: boolean; chapters: Chap[]; quiz: Quiz | null; inscription: Resume | null }
+interface Detail { course: { id: string; titre: string; description: string; niveau: string; statut: string; instructeurNom: string; meetUrl?: string; meetHoraire?: string; feedbackUrl?: string }; peutGerer: boolean; chapters: Chap[]; quiz: Quiz | null; inscription: Resume | null }
 interface Dash { global: { cours: number; publies: number; inscriptions: number; termines: number; tauxAchevement: number; certificats: number; inactifs: number }; parCours: { id: string; titre: string; statut: string; inscrits: number; termines: number; tauxAchevement: number; scoreMoyen: number | null; inactifs: number }[] }
 interface Enr { id: string; courseId: string; apprenantNom: string; apprenantEmail: string; inscritAt: string; statut: string; coursTitre: string; resume: Resume }
 interface ImportReport { total: number; created: number; duplicates: { line: number; email: string; reason: 'dans_le_fichier' | 'deja_inscrit' }[]; errors: { line: number; message: string }[] }
@@ -344,13 +344,13 @@ function CourseEditor({ api, navigate, id }: Props & { id: string }) {
   const d = useAsync(() => get<Detail>(api, '/cours/detail', { id }), [id]);
   const { busy, act } = useAct(d.reload);
   const confirm = useConfirm();
-  const [info, setInfo] = useState<{ titre: string; description: string; niveau: string } | null>(null);
+  const [info, setInfo] = useState<{ titre: string; description: string; niveau: string; meetUrl: string; meetHoraire: string; feedbackUrl: string } | null>(null);
   const [chap, setChap] = useState('');
   const [lessonFor, setLessonFor] = useState<string | null>(null); // id du chapitre (ajout) ou de la leçon (édition)
   const [quiz, setQuiz] = useState<{ titre: string; seuil: string; tentativesMax: string } | null>(null);
   if (!d.data) return <Loading error={d.error} reload={d.reload} />;
   const c = d.data.course;
-  const form = info ?? { titre: c.titre, description: c.description, niveau: c.niveau };
+  const form = info ?? { titre: c.titre, description: c.description, niveau: c.niveau, meetUrl: c.meetUrl ?? '', meetHoraire: c.meetHoraire ?? '', feedbackUrl: c.feedbackUrl ?? '' };
   const qz = quiz ?? { titre: d.data.quiz?.titre ?? 'Quiz final', seuil: String(d.data.quiz?.seuil ?? 70), tentativesMax: String(d.data.quiz?.tentativesMax ?? 3) };
   const setStatut = (statut: string) => act(() => post(api, '/cours/statut', { id, statut }), 'Statut mis à jour');
   const archive = async (path: string, what: string, itemId: string) => { if (await confirm({ title: `Archiver ${what} ?`, message: 'Il disparaît du cours ; les résultats déjà enregistrés sont conservés.', confirmLabel: 'Archiver', danger: true })) await act(() => post(api, path, { id: itemId }), 'Archivé'); };
@@ -366,6 +366,12 @@ function CourseEditor({ api, navigate, id }: Props & { id: string }) {
           <Field label="Niveau"><Select value={form.niveau} onChange={(v) => setInfo({ ...form, niveau: v })} options={LEVELS} /></Field>
         </div>
         <Field label="Description"><textarea className={field} rows={2} value={form.description} onChange={(e) => setInfo({ ...form, description: e.target.value })} /></Field>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label="Lien Google Meet (séances en direct)"><Input type="url" inputMode="url" placeholder="https://meet.google.com/abc-defg-hij" value={form.meetUrl} onChange={(e) => setInfo({ ...form, meetUrl: e.target.value })} /></Field>
+          <Field label="Jours et heure des séances"><Input placeholder="Chaque mardi, 18 h (heure de Tunis)" value={form.meetHoraire} onChange={(e) => setInfo({ ...form, meetHoraire: e.target.value })} /></Field>
+        </div>
+        <Field label="Formulaire d’avis des apprenants (facultatif)"><Input type="url" inputMode="url" placeholder="https://forms.gle/…" value={form.feedbackUrl} onChange={(e) => setInfo({ ...form, feedbackUrl: e.target.value })} /></Field>
+        <p className="text-xs text-slate-500">Le lien Meet et le formulaire d’avis ne sont visibles que par les inscrits ; l’horaire est visible de tous.</p>
         <div className="flex justify-end"><Button loading={busy} disabled={!info} onClick={() => void act(async () => { await post(api, '/cours/save', { id, ...form }); setInfo(null); }, 'Cours enregistré')}>Enregistrer</Button></div>
       </Card>
 

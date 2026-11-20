@@ -36,3 +36,13 @@ test('certificat : parenthèses et antislash échappés, noms et titres très lo
   assert.ok(t.includes('\x85')); // titre tronqué par « … » (WinAnsi 0x85)
   assert.ok(text(certificatePdf({ ...base, nom: 'X'.repeat(400) })).startsWith('%PDF-')); // police réduite, pas d'exception
 });
+
+test('certificat : QR code de vérification dessiné seulement avec une adresse https sûre', () => {
+  const url = 'https://exemple.tn/formation/verifier/?code=CERT-ABCDEFGH23';
+  const withQr = text(certificatePdf({ ...base, verifyUrl: url }));
+  assert.ok(withQr.includes('Scannez pour v\xe9rifier') && withQr.includes('1 1 1 rg')); // légende + marge blanche du QR
+  const none = text(certificatePdf(base));
+  assert.ok(!none.includes('Scannez pour') && !none.includes('1 1 1 rg'));
+  assert.ok(!text(certificatePdf({ ...base, verifyUrl: 'javascript:alert(1)' })).includes('Scannez pour'));
+  assert.ok(!text(certificatePdf({ ...base, verifyUrl: `https://exemple.tn/${'a'.repeat(300)}` })).includes('Scannez pour')); // trop long pour un QR : pas de QR, pas d'erreur
+});
