@@ -1,0 +1,761 @@
+{
+  "info": {
+    "name": "API LMS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Comptes de démonstration : admin@demo.tn, instructeur@demo.tn, apprenant@demo.tn, sami@demo.tn, auditeur@demo.tn (mot de passe Demo1234!). Lancez d'abord « Connexion »."
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST /auth/login — Connexion (enregistre le jeton)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const r = pm.response.json(); if (r.token) pm.collectionVariables.set('token', r.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": {
+          "raw": "{{base}}/auth/login",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"instructeur@demo.tn\",\n  \"password\": \"Demo1234!\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /dashboard — Tableau de bord",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/dashboard",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "dashboard"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /cours — Cours visibles par l'utilisateur",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/cours",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cours"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /cours/detail — Plan du cours",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/cours/detail?id=",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cours",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /cours/save — Crée un cours",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cours/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cours",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"titre\": \"\",\n  \"description\": \"\",\n  \"niveau\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /cours/statut — Publie, archive ou repasse en brouillon",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/cours/statut",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "cours",
+            "statut"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"statut\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /chapitre/save — Ajoute",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/chapitre/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "chapitre",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"courseId\": \"\",\n  \"titre\": \"\",\n  \"position\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /chapitre/archive — Archive un chapitre et ses leçons",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/chapitre/archive",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "chapitre",
+            "archive"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /lecon/save — Ajoute ou modifie une leçon (contenu principal + médias complémentaires)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/lecon/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "lecon",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"courseId\": \"\",\n  \"chapterId\": \"\",\n  \"titre\": \"\",\n  \"type\": \"texte\",\n  \"contenu\": \"\",\n  \"medias\": [\n    {\n      \"type\": \"video\",\n      \"titre\": \"Démonstration\",\n      \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Schéma\",\n      \"url\": \"https://exemple.tn/schema.png\"\n    },\n    {\n      \"type\": \"document\",\n      \"titre\": \"Fiche PDF\",\n      \"url\": \"https://exemple.tn/fiche.pdf\"\n    }\n  ],\n  \"dureeMin\": 5\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /lecon/archive — Archive une leçon",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/lecon/archive",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "lecon",
+            "archive"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /quiz/save — Crée ou met à jour le quiz final du cours",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/quiz/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "quiz",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"courseId\": \"\",\n  \"titre\": \"\",\n  \"seuil\": 70,\n  \"tentativesMax\": 3\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /question/save — Ajoute",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/question/save",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "question",
+            "save"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\",\n  \"courseId\": \"\",\n  \"enonce\": \"\",\n  \"choix\": [\n    \"A\",\n    \"B\",\n    \"C\"\n  ],\n  \"bonnes\": [\n    1\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /question/archive — Archive une question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/question/archive",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "question",
+            "archive"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /inscription/add — S'inscrit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/inscription/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "inscription",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"courseId\": \"\",\n  \"apprenantNom\": \"\",\n  \"apprenantEmail\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /inscriptions — Inscriptions visibles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/inscriptions?courseId=",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "inscriptions"
+          ],
+          "query": [
+            {
+              "key": "courseId",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /inscription — Détail et progression d'une inscription",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/inscription?id=",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "inscription"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /lecon/terminer — Termine une leçon",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/lecon/terminer",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "lecon",
+            "terminer"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"enrollmentId\": \"\",\n  \"lessonId\": \"\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /quiz/soumettre — Soumet les réponses ; le score est calculé par le serveur",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/quiz/soumettre",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "quiz",
+            "soumettre"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"enrollmentId\": \"\",\n  \"reponses\": [\n    [\n      1\n    ],\n    [\n      0,\n      2\n    ]\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /certificats — Certificats visibles, avec contrôle d'intégrité",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/certificats",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "certificats"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /certificat/pdf — Certificat au format PDF",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/certificat/pdf?id=",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "certificat",
+            "pdf"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /certificat/verifier — Vérification publique d'un certificat par son code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/certificat/verifier?code=",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "certificat",
+            "verifier"
+          ],
+          "query": [
+            {
+              "key": "code",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "POST /users/add — Crée un compte",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/users/add",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "users",
+            "add"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"nom\": \"\",\n  \"role\": \"\",\n  \"password\": \"\"\n}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{ "compilerOptions": { "target": "ES2022", "module": "ESNext", "moduleResolution": "Bundler", "strict": true, "noEmit": true, "skipLibCheck": true, "esModuleInterop": true, "jsx": "react-jsx", "types": ["node"] }, "include": ["core", "adapters", "tests", "seed", "src/routes.ts", "src/standalone.ts", "src/server.ts", "src/sdk.d.ts", "src/admin/index.tsx"] }

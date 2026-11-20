@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: API LMS (Learning Management System)
+  version: 0.1.0
+  description: |
+    Cours, leçons, inscriptions, progression, quiz et certificats vérifiables.
+    Authentification : POST /auth/login → jeton à envoyer en `Authorization: Bearer <jeton>` (sauf /certificat/verifier, public).
+    Rôles : admin (tout), instructeur (ses cours), apprenant (ses inscriptions), auditeur (lecture seule).
+    Erreurs : { "error": { "code", "message", "details" } }.
+servers: [ { url: http://localhost:3000/api } ]
+components:
+  securitySchemes: { bearer: { type: http, scheme: bearer, bearerFormat: JWT } }
+security: [ { bearer: [] } ]
+paths:
+  /auth/login:
+    post:
+      summary: Connexion (jeton valable 8 h ; même message d'erreur pour e-mail inconnu et mot de passe faux)
+      tags: [auth]
+      security: []
+      requestBody: { content: { application/json: { schema: { type: object, required: [email, password], properties: { email: { type: string }, password: { type: string } } } } } }
+      responses:
+        '200': { description: "{ token, actor }" }
+        '401': { description: Identifiants incorrects }
+        '429': { description: Trop de tentatives }
+  /dashboard:
+    get:
+      summary: "Tableau de bord : inscrits, achèvement, score moyen, apprenants inactifs"
+      tags: [dashboard]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /cours:
+    get:
+      summary: "Cours visibles par l'utilisateur (avec sa propre progression)"
+      tags: [cours]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /cours/detail:
+    get:
+      summary: "Plan du cours (chapitres, leçons, quiz) ; contenu réservé aux inscrits, bonnes réponses jamais envoyées aux apprenants"
+      tags: [cours]
+      parameters:
+        - { name: "id", in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /cours/save:
+    post:
+      summary: "Crée un cours (sans id) ou le modifie (avec id)"
+      tags: [cours]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "omis pour une création" }
+                titre: { description: "" }
+                description: { description: "" }
+                niveau: { description: "debutant | intermediaire | avance" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /cours/statut:
+    post:
+      summary: "Publie, archive ou repasse en brouillon (publier exige une leçon)"
+      tags: [cours]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+                statut: { description: "brouillon | publie | archive" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /chapitre/save:
+    post:
+      summary: "Ajoute (courseId, titre) ou modifie (id, titre, position) un chapitre"
+      tags: [contenu]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+                courseId: { description: "" }
+                titre: { description: "" }
+                position: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /chapitre/archive:
+    post:
+      summary: "Archive un chapitre et ses leçons (rien n'est supprimé)"
+      tags: [contenu]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /lecon/save:
+    post:
+      summary: "Ajoute ou modifie une leçon : contenu principal (texte, video ou lien) et jusqu'à 20 médias complémentaires (video, image, document, lien ; adresse https uniquement)"
+      tags: [contenu]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+                courseId: { description: "" }
+                chapterId: { description: "" }
+                titre: { description: "" }
+                type: { description: "texte | video | lien" }
+                contenu: { description: "texte, ou adresse https:// ; un texte peut rester vide si la leçon a au moins un média" }
+                medias:
+                  type: array
+                  maxItems: 20
+                  description: "Médias complémentaires, affichés à la suite du contenu dans l'ordre du tableau. En modification : la liste fournie REMPLACE l'ancienne ; omise, elle est conservée ; [] la vide. Réservés aux inscrits."
+                  items:
+                    type: object
+                    required: [type, url]
+                    properties:
+                      type: { type: string, enum: [video, image, document, lien] }
+                      titre: { type: string, maxLength: 120, description: "facultatif" }
+                      url: { type: string, pattern: "^https://", description: "adresse https:// uniquement" }
+                dureeMin: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /lecon/archive:
+    post:
+      summary: "Archive une leçon"
+      tags: [contenu]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /quiz/save:
+    post:
+      summary: "Crée ou met à jour le quiz final du cours (seuil %, tentatives max, 0 = illimité)"
+      tags: [quiz]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId: { description: "" }
+                titre: { description: "" }
+                seuil: { description: "1-100" }
+                tentativesMax: { description: "0-20" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /question/save:
+    post:
+      summary: "Ajoute (courseId, enonce, choix[2-6], bonnes[indices]) ou modifie (id) une question"
+      tags: [quiz]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+                courseId: { description: "" }
+                enonce: { description: "" }
+                choix: { description: "tableau de textes" }
+                bonnes: { description: "indices des bonnes réponses" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /question/archive:
+    post:
+      summary: "Archive une question"
+      tags: [quiz]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /inscription/add:
+    post:
+      summary: "S'inscrit (courseId seul) ou inscrit un apprenant par nom + e-mail (formateur du cours)"
+      tags: [apprentissage]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId: { description: "" }
+                apprenantNom: { description: "formateur seulement" }
+                apprenantEmail: { description: "formateur seulement" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /inscriptions:
+    get:
+      summary: "Inscriptions visibles (un apprenant ne voit que les siennes), avec progression"
+      tags: [apprentissage]
+      parameters:
+        - { name: "courseId", in: query, required: false, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /inscriptions/export:
+    get:
+      summary: "Export CSV du suivi (dans le périmètre de l'appelant) : { csv }"
+      tags: [apprentissage]
+      parameters:
+        - { name: "courseId", in: query, required: false, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { csv: { type: string } } } } } }
+        '401': { description: Non authentifié }
+  /inscriptions/import:
+    post:
+      summary: "Import d'apprenants (CSV : colonnes Nom, Prénom facultatif, E-mail ; 1 000 lignes max) dans un cours publié"
+      tags: [apprentissage]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [courseId, csv], properties: { courseId: { type: string }, csv: { type: string }, dryRun: { type: boolean, description: "Valide sans rien écrire" } } }
+      responses:
+        '200': { description: "Rapport : total, created, duplicates[], errors[]", content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '409': { description: "Cours non publié" }
+  /certificats/export:
+    get:
+      summary: "Export CSV des certificats visibles : { csv }"
+      tags: [certificats]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { csv: { type: string } } } } } }
+        '401': { description: Non authentifié }
+  /inscription:
+    get:
+      summary: "Détail et progression d'une inscription"
+      tags: [apprentissage]
+      parameters:
+        - { name: "id", in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /lecon/terminer:
+    post:
+      summary: "Termine une leçon (idempotent) : l'apprenant, ou le formateur du cours pour lui"
+      tags: [apprentissage]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrollmentId: { description: "" }
+                lessonId: { description: "" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /quiz/soumettre:
+    post:
+      summary: "Soumet les réponses ; le score est calculé par le serveur"
+      tags: [apprentissage]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrollmentId: { description: "" }
+                reponses: { description: "tableau (une entrée par question) de tableaux d'indices" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /certificats:
+    get:
+      summary: "Certificats visibles, avec contrôle d'intégrité"
+      tags: [certificats]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /certificat/pdf:
+    get:
+      summary: "Certificat au format PDF"
+      tags: [certificats]
+      parameters:
+        - { name: "id", in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/pdf: { schema: { type: string, format: binary } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /certificat/verifier:
+    get:
+      summary: "Vérification publique d'un certificat par son code (nom, cours et date uniquement)"
+      tags: [certificats]
+      security: []
+      parameters:
+        - { name: "code", in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }
+  /users/add:
+    post:
+      summary: "Crée un compte (administrateur) : admin, instructeur, apprenant ou auditeur"
+      tags: [utilisateurs]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { description: "" }
+                nom: { description: "" }
+                role: { description: "" }
+                password: { description: "8 caractères min." }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object } } } }
+        '400': { description: Validation }
+        '401': { description: Non authentifié }
+        '403': { description: Droits insuffisants }
+        '404': { description: Introuvable }
+        '409': { description: Conflit métier }

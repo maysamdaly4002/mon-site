@@ -1,0 +1,33 @@
+{
+  "name": "snapify-lms",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Module LMS (Learning Management System) pour Snapify : cours, leçons, inscriptions, progression, quiz et certificats vérifiables.",
+  "scripts": {
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "tsx adapters/postgres/migrate.ts",
+    "db:seed": "tsx adapters/postgres/seed.ts",
+    "start": "tsx src/standalone.ts",
+    "check": "npm run typecheck && npm test",
+    "db:create-admin": "tsx adapters/postgres/create-admin.ts"
+  },
+  "dependencies": {
+    "pg": "^8.13.0",
+    "read-excel-file": "^5.8.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "@types/react": "^19.3.0",
+    "lucide-react": "^1.76.0",
+    "react": "^19.3.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

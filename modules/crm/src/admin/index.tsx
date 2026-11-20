@@ -40,6 +40,21 @@ function saveText(name: string, text: string, type = 'text/csv;charset=utf-8') {
   const a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
 }
 
+/** Lit un fichier .csv ou .xlsx et renvoie son contenu au format CSV (1re feuille pour Excel). */
+async function fileToCsv(file: File): Promise<string> {
+  if (!/\.xlsx$/i.test(file.name)) {
+    if (/\.xls$/i.test(file.name)) throw new Error('Format .xls non pris en charge : enregistrez le fichier en .xlsx ou .csv');
+    return file.text();
+  }
+  const { default: readXlsxFile } = await import('read-excel-file');
+  const rows = await readXlsxFile(file);
+  const cell = (v: unknown) => {
+    const t = v == null ? '' : v instanceof Date ? v.toISOString().slice(0, 10) : String(v);
+    return /[\",;\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  return rows.map((r) => r.map(cell).join(',')).join('\r\n');
+}
+
 // ───────────────────────── Contacts ─────────────────────────
 function ContactForm({ api, initial, onSaved, onCancel }: { api: Api; initial?: Contact; onSaved: () => void; onCancel: () => void }) {
   const companies = useAsync(() => get<{ items: Company[] }>(api, '/companies', { size: 100 }), [api]);
@@ -84,7 +99,7 @@ function ContactsList({ api, navigate }: AdminPageProps<Record<string, never>>) 
   const importFile = async (file: File) => {
     setImporting(true);
     try {
-      const r = await post<{ created: number; duplicates: unknown[]; errors: { line: number; message: string }[] }>(api, '/import', { csv: await file.text(), onDuplicate: 'skip' });
+      const r = await post<{ created: number; duplicates: unknown[]; errors: { line: number; message: string }[] }>(api, '/import', { csv: await fileToCsv(file), onDuplicate: 'skip' });
       toast.success(`${r.created} créé(s), ${r.duplicates.length} doublon(s) ignoré(s), ${r.errors.length} erreur(s)`);
       if (r.errors.length) toast.error(`Ligne ${r.errors[0].line} : ${r.errors[0].message}`);
       void list.reload();
@@ -95,9 +110,9 @@ function ContactsList({ api, navigate }: AdminPageProps<Record<string, never>>) 
     <div className="space-y-4">
       <PageHeader title="Contacts" description="Prospects et clients : recherche, filtres, historique des échanges." actions={
         <div className="flex flex-wrap gap-2">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50">
-            <Upload className="h-4 w-4" />{importing ? 'Import…' : 'Importer CSV'}
-            <input type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} />
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-black hover:bg-slate-50">
+            <Upload className="h-4 w-4" />{importing ? 'Import…' : 'Importer CSV / Excel'}
+            <input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} />
           </label>
           <Button icon={Download} onClick={() => void exportCsv()}>Exporter</Button>
           <Button icon={Plus} onClick={() => setAdding(true)}>Nouveau contact</Button>
